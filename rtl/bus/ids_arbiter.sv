@@ -1,0 +1,94 @@
+/*
+  Author: Jiyong Park.
+  Affiliation: IDS Lab, Korea University EE.
+  Description: priority arbiter for the BUS.
+  priority: 1. RISC-V core (IMEM) && (DMEM)
+            2. DMA
+*/
+
+module ids_arbiter (
+    input           i_clk,
+    input           i_rst_n,
+
+    // master 1 (DMEM)
+    input           i_req_dmem,
+    output logic    o_gnt_dmem,
+
+    // master 
+    input           i_req_dma,
+    output logic    o_gnt_dma
+);
+
+    localparam IDLE = 2'b00;
+    localparam GNT_RV = 2'b01;   // RV grant
+    localparam GNT_DMA = 2'b10;   // DMA grant
+
+    logic [1:0] curr_state;
+    logic [1:0] next_state;
+
+    // state machine
+    always_ff @ (posedge i_clk or negedge i_rst_n) begin
+        if (~i_rst_n) begin
+            curr_state <= IDLE;
+        end else begin
+            curr_state <= next_state;
+        end
+    end
+
+    // next state machine
+    always_comb begin
+        case (curr_state)
+            IDLE: begin
+                if (i_req_dmem) begin
+                    next_state = GNT_RV;
+                end else if (i_req_dma) begin
+                    next_state = GNT_DMA;
+                end else begin
+                    next_state = IDLE;
+                end
+            end
+            GNT_RV: begin
+                if (i_req_dmem) begin
+                    next_state = GNT_RV;
+                end else if (i_req_dma) begin
+                    next_state = GNT_DMA;
+                end else begin
+                    next_state = IDLE;
+                end
+            end
+            GNT_DMA: begin
+                if (i_req_dmem) begin
+                    next_state = GNT_RV;
+                end else if (i_req_dma) begin
+                    next_state = GNT_DMA;
+                end else begin
+                    next_state = IDLE;
+                end
+            end 
+            default: begin
+                next_state = IDLE;
+            end
+        endcase
+    end
+
+    // state output machine
+    always_comb begin
+        o_gnt_dmem = '0;
+        o_gnt_dma = '0;
+        case (curr_state)
+            GNT_RV: begin                    // RV grant (DMEM)
+                o_gnt_dmem = 1'b1;
+            end
+            GNT_DMA: begin                    // DMA grant
+                o_gnt_dma = 1'b1;
+            end 
+            default: begin
+                o_gnt_dmem = '0;
+                o_gnt_dma = '0;
+            end
+        endcase
+    end
+    
+
+
+endmodule
