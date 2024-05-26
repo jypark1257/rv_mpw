@@ -1,7 +1,8 @@
 OUTPUT_ARCH( "riscv" )
 
 MEMORY {
-    mem  (rwx): ORIGIN = 0x40000000, LENGTH = 0x00001000
+    imem  (rwx): ORIGIN = 0x40000000, LENGTH = 0x00001000
+    dmem  (rwx): ORIGIN = 0x40001000, LENGTH = 0x00001000
 }
 
 ENTRY(_start)
@@ -14,8 +15,8 @@ SECTIONS
     .text.init : 
     { 
         *(.init)
-    } > mem
-    . = 0x40000400;
+    } > imem
+    . = 0x40001000;
     .data :
     {
         PROVIDE(_global_pointer = . + 0x800);
@@ -23,11 +24,11 @@ SECTIONS
         *(.result)
         *(.data)
         PROVIDE(_edata = .);
-    } > mem
+    } > dmem
     .bss :
     {
         *(.bss)
-    } > mem
+    } > dmem
     /* Stack Pointer - End of Memory */
     PROVIDE(_stack_pointer = ORIGIN(dmem) + LENGTH(dmem));
 }

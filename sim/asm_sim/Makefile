@@ -23,9 +23,10 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu_control_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu.sv
 
 # UART 
-VERILOG_SOURCES += $(shell pwd)/../../rtl/io/uart.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/io/uart_transmitter.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/io/uart_receiver.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart_wrap.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart_transmitter.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart_receiver.v
 
 # BUS
 VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/ids_bus.sv

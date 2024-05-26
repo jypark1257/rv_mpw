@@ -1,8 +1,6 @@
 #include "ascii.h"
 #include "uart.h"
 #include "string.h"
-#include "memory_map.h"
-
 int8_t* read_token(int8_t* b, uint32_t n, int8_t* ds)
 {
     for (uint32_t i = 0; i < n; i++) {

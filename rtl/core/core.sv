@@ -21,12 +21,7 @@ module core #(
     output  logic   [XLEN-1:0]  o_data_wr_data,
     output  logic   [3:0]       o_data_size,
     output  logic               o_data_read,
-    output  logic               o_data_write,
-
-    // UART
-    output  logic               o_data_out_ready,
-    output  logic               o_data_in_valid,
-    output  logic   [7:0]       o_data_in
+    output  logic               o_data_write
 );
 
     // pipline registers
@@ -207,25 +202,6 @@ module core #(
         .o_forward_in2  (forward_in2)
     );
 
-    assign ex_mem_write = ((alu_result == 32'h80000008) && (ex.opcode[6:2] == 5'b01000) && (!branch_taken)) ? 1'b0 : ex.mem_write;
-    
-    //UART IO    
-    logic [7:0] data_in_q;
-    logic data_in_valid_q;
-    logic data_out_ready_q;
-
-    always_ff @(posedge i_clk) begin
-        data_in_q <= ((alu_result == 32'h80000008) && (ex.opcode[6:2] == 5'b01000) && (!branch_taken)) ? wr_data[7:0] : data_in_q;
-        data_in_valid_q <= ((alu_result == 32'h80000008) && (ex.opcode[6:2] == 5'b01000) && (!branch_taken));
-        data_out_ready_q <= ((alu_result == 32'h80000004) && (ex.opcode[6:2] == 5'b00000) && (!branch_taken));
-    end
-
-    assign o_data_in = data_in_q;
-    assign o_data_in_valid = data_in_valid_q;
-    assign o_data_out_ready = data_out_ready_q;
-
-
-
     // data interface set
     // un-aligned store
     always @(*) begin
@@ -253,7 +229,7 @@ module core #(
     assign o_data_addr = alu_result;
     assign o_data_wr_data = wr_data;
     assign o_data_read = ex.mem_read;
-    assign o_data_write = ex_mem_write;
+    assign o_data_write = ex.mem_write;
 
     // --------------------------------------------------------
 
