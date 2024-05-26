@@ -2,14 +2,13 @@
 # riscv64-linux-gnu-gcc - Compiler from system packages (for local dev)
 # riscv64-unknown-elf-gcc - From SiFive (on c125m/eda machines)
 
-RISCV_PACKAGE := riscv64-linux-gnu
+RISCV_PIM := /opt/riscv_pim/bin/riscv64-unknown-elf
 RISCV_DEFAULT := riscv64-unknown-elf
-RISCV_DEFAULT_PRESENT := $(shell command -v $(RISCV_DEFAULT)-gcc 2> /dev/null)
 
-ifdef RISCV_DEFAULT_PRESENT
+ifeq ($(GCC_PIM), true)
     RISCV := $(RISCV_DEFAULT)
 else
-    RISCV := $(RISCV_PACKAGE)
+    RISCV := $(RISCV_PIM)
 endif
 
 LIB_PATH := ../rv_lib
@@ -40,7 +39,7 @@ $(TARGET).elf: $(SOURCES)
 	$(RISCV)-objdump -D -Mnumeric $@ > $(basename $@).dump
 	$(RISCV)-strip -R .comment -R .note.gnu.build-id $@
 	$(RISCV)-objcopy $(basename $@).elf -O binary $(basename $@).bin
-	$(RISCV)-bin2hex -w 32 $(basename $@).bin $(basename $@).hex
+	$(RISCV_DEFAULT)-bin2hex -w 32 $(basename $@).bin $(basename $@).hex
 	sed -i '1i @0' $(basename $@).hex
 # cp $(basename $@).hex ../../rtl/mem.hex
 

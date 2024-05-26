@@ -20,6 +20,7 @@ module core_id_stage #(
     output  logic   [2:0]       o_mem_to_reg,
     output  logic   [3:0]       o_d_size,
     output  logic               o_d_unsigned,
+    output  logic               o_dma_en,
     output  logic   [XLEN-1:0]  o_imm,
     output  logic   [XLEN-1:0]  o_rs1_dout,
     output  logic   [XLEN-1:0]  o_rs2_dout
@@ -45,7 +46,8 @@ module core_id_stage #(
         .o_reg_write    (o_reg_write),
         .o_mem_to_reg   (o_mem_to_reg),
         .o_d_size       (o_d_size),
-        .o_d_unsigned   (o_d_unsigned)
+        .o_d_unsigned   (o_d_unsigned),
+        .o_dma_en       (o_dma_en)
     );
 
     // Immrdiate generator

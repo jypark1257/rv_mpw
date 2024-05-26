@@ -21,7 +21,14 @@ module core #(
     output  logic   [XLEN-1:0]  o_data_wr_data,
     output  logic   [3:0]       o_data_size,
     output  logic               o_data_read,
-    output  logic               o_data_write
+    output  logic               o_data_write,
+    // DMA interface
+    output  logic               o_dma_en,
+    output  logic   [2:0]       o_dma_funct3,
+    output  logic   [3:0]       o_dma_sel_pim,  
+    output  logic   [11:0]      o_dma_size,
+    output  logic   [31:0]      o_dma_mem_addr
+
 );
 
     // pipline registers
@@ -43,6 +50,9 @@ module core #(
     logic [4:0] rs2;
     logic [6:0] funct7;
 
+    // DMA control signals
+    logic dma_en;
+
     logic mem_read;
     logic mem_write;
     logic reg_write;
@@ -51,6 +61,7 @@ module core #(
     logic d_unsigned;
 
     logic [XLEN-1:0] wr_data;
+    logic [XLEN-1:0] forward_in1;
     logic [XLEN-1:0] forward_in2;
     logic [XLEN-1:0] alu_result;
     logic ex_mem_write;
@@ -136,6 +147,7 @@ module core #(
         .o_mem_to_reg   (mem_to_reg),
         .o_d_size       (d_size),
         .o_d_unsigned   (d_unsigned),
+        .o_dma_en       (dma_en),
         .o_rs1_dout     (rs1_dout),
         .o_rs2_dout     (rs2_dout)
     );
@@ -170,6 +182,7 @@ module core #(
                 ex.mem_to_reg <= mem_to_reg;
                 ex.d_size <= d_size;
                 ex.d_unsigned <= d_unsigned;
+                ex.dma_en <= dma_en;
                 ex.rs1_dout <= rs1_dout;
                 ex.rs2_dout <= rs2_dout;
             end
@@ -199,8 +212,17 @@ module core #(
         .o_alu_result   (alu_result),
         .o_branch_taken (branch_taken),
         .o_pc_branch    (pc_branch),
+        .o_forward_in1  (forward_in1),
         .o_forward_in2  (forward_in2)
     );
+
+    // DMA interface
+    assign o_dma_en = ex.dma_en;
+    assign o_dma_funct3 = ex.funct3;
+    assign o_dma_sel_pim = ex.imm[3:0];
+    assign o_dma_size = forward_in1[11:0];
+    assign o_dma_mem_addr = forward_in2;
+    
 
     // data interface set
     // un-aligned store

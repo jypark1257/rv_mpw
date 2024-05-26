@@ -11,10 +11,10 @@ module main_control_unit (
     output  logic           o_d_unsigned,
     output  logic   [2:0]   o_mem_to_reg,
     output  logic           o_mem_read,
-    output  logic           o_mem_write
+    output  logic           o_mem_write,
+    // DMA enable signal
+    output logic            o_dma_en
 );
-
-
 
     // SIZES
     localparam SIZE_HALF = 2'b01;
@@ -27,6 +27,7 @@ module main_control_unit (
     localparam SRC_IMM = 3'b011;
 
     always_comb begin
+        o_dma_en = '0;
         o_mem_read = '0;
         o_mem_write = '0;
         o_reg_write = '0;
@@ -103,7 +104,12 @@ module main_control_unit (
                 o_reg_write = 1'b1;
                 o_mem_to_reg = SRC_IMM;
             end
+            OPCODE_PIM: begin
+                o_dma_en = 1'b1;
+                o_mem_write = 1'b1;
+            end
             default: begin
+                o_dma_en = '0;
                 o_mem_read = '0;
                 o_mem_write = '0;
                 o_reg_write = '0;

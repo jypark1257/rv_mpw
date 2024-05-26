@@ -20,6 +20,7 @@ typedef struct packed {
     logic   [2:0]   mem_to_reg;
     logic   [3:0]   d_size;
     logic           d_unsigned;
+    logic           dma_en;
     logic   [31:0]  rs1_dout;
     logic   [31:0]  rs2_dout;
 } pipe_id_ex;

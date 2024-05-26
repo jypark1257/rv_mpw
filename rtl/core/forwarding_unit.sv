@@ -26,7 +26,7 @@ module forwarding_unit (
 
     always_comb begin
         o_forward_b = RF_DATA;
-        if ((i_opcode == OPCODE_R) || (i_opcode == OPCODE_STORE) || (i_opcode == OPCODE_BRANCH)) begin
+        if ((i_opcode == OPCODE_R) || (i_opcode == OPCODE_STORE) || (i_opcode == OPCODE_BRANCH) || (i_opcode == OPCODE_PIM)) begin
             if (i_wb_reg_write && (i_wb_rd == i_rs2)) begin
                 o_forward_b = WB_DATA;
             end else begin

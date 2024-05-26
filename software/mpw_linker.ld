@@ -29,5 +29,5 @@ SECTIONS
         *(.bss)
     } > mem
     /* Stack Pointer - End of Memory */
-    PROVIDE(_stack_pointer = ORIGIN(dmem) + LENGTH(dmem));
+    PROVIDE(_stack_pointer = ORIGIN(mem) + LENGTH(mem));
 }
