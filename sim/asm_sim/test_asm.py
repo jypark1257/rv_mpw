@@ -31,6 +31,8 @@ async def rvtest_add(dut):
     for idx in range (0, 256):
         dut.imem_0.imem_sram.mem[idx].value = 0
         dut.dmem_0.dmem_sram.mem[idx].value = 0
+    for idx in range (0, 448):
+        dut.buf_0.buf_sram.mem[idx].value = random.randint(0, 2**9)
     await RisingEdge(dut.i_clk)
     await Timer(1, units="ns")
 

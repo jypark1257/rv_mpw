@@ -22,11 +22,13 @@ module core #(
     output  logic   [3:0]       o_data_size,
     output  logic               o_data_read,
     output  logic               o_data_write,
+    // DMA status
+    input                       i_dma_busy,
     // DMA interface
     output  logic               o_dma_en,
     output  logic   [2:0]       o_dma_funct3,
     output  logic   [3:0]       o_dma_sel_pim,  
-    output  logic   [11:0]      o_dma_size,
+    output  logic   [12:0]      o_dma_size,
     output  logic   [31:0]      o_dma_mem_addr
 
 );
@@ -73,8 +75,13 @@ module core #(
 
     logic [XLEN-1:0] rd_din;
 
+    logic stall_from_gen;
+
+    logic stall;
     logic if_flush;    
     logic id_flush;
+    logic if_stall;
+
 
     // --------------------------------------------------------
 
@@ -93,21 +100,22 @@ module core #(
 
     // Instruction memory
     logic [XLEN-1:0] instr;
-    assign pc_write = 1'b1;
+    assign pc_write = (!stall) ? 1'b1 : 1'b0;
 
     // instruction memory interface
     assign o_instr_addr = (branch_taken) ? pc_branch : pc_curr;
     assign instr = i_instr_rd_data;
     assign o_instr_wr_data = '0;
     assign o_instr_size = 4'b1111;        // always 32-bit access
-    assign o_instr_read = 1'b1;
+    assign o_instr_read = (!stall) ? 1'b1 : 1'b0;
     assign o_instr_write = 1'b0;
 
 
 
     // --------------------------------------------------------
 
-    assign if_flush = (branch_taken) ? 1 : 0;
+    assign if_flush = (branch_taken) ? 1'b1 : 1'b0;
+    assign if_stall = (stall) ? 1'b1: 1'b0;
 
     // IF/ID pipeline register
     always_ff @(posedge i_clk or negedge i_rst_n) begin
@@ -116,6 +124,9 @@ module core #(
         end else begin
             if (if_flush) begin
                 id <= '0;
+            end else if (if_stall) begin
+                id.pc <= id.pc;
+                id.instr <= id.instr;
             end else begin
                 id.pc <= pc_instr;
                 id.instr <= instr;
@@ -152,14 +163,21 @@ module core #(
         .o_rs2_dout     (rs2_dout)
     );
 
+
     // --------------------------------------------------------
 
     // request for dmem use
-    assign o_req_dmem = (mem_read || mem_write);
+    assign o_req_dmem = ((mem_read || mem_write) && (!stall));
     
-    assign id_flush = (branch_taken) ? 1 : 0;
 
     // --------------------------------------------------------
+    /* DEBUG */
+    logic [31:0] ex_instr;
+    logic [31:0] id_instr;
+    assign id_instr = id.instr;
+    assign ex_instr = ex.instr;
+    /*       */
+    assign id_flush = (branch_taken || stall) ? 1 : 0;
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
         if (~i_rst_n) begin
@@ -168,6 +186,7 @@ module core #(
             if (id_flush) begin
                 ex <= '0;
             end else begin
+                ex.instr <= id.instr;
                 ex.pc <= id.pc;
                 ex.opcode <= opcode;
                 ex.rd <= rd;
@@ -216,11 +235,22 @@ module core #(
         .o_forward_in2  (forward_in2)
     );
 
+    assign stall = (i_dma_busy || ex.dma_en);
+
+    // stall generator for DMA
+    //stall_generator stall_gen_0 (
+    //    .i_clk          (i_clk),
+    //    .i_rst_n        (i_rst_n),
+    //    .i_stall_gen    (ex.dma_en),
+    //    .i_stall_count  (forward_in1[12:0]),
+    //    .o_stall        (stall_from_gen)
+    //);
+
     // DMA interface
     assign o_dma_en = ex.dma_en;
     assign o_dma_funct3 = ex.funct3;
     assign o_dma_sel_pim = ex.imm[3:0];
-    assign o_dma_size = forward_in1[11:0];
+    assign o_dma_size = forward_in1[12:0];
     assign o_dma_mem_addr = forward_in2;
     
 

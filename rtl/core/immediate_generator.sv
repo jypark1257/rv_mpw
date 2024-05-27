@@ -19,10 +19,7 @@ module immediate_generator (
     logic [4:0]  sht_amt;   // shift amount
     logic [19:0] imm_u;     //upper immediate
 
-    // FP immediates 
-    logic [11:0] imm_flw;
-    logic [11:0] imm_fsw;
- 
+    logic [31:0] imm_pim_sext;
     logic [31:0] imm_i_sext;
     logic [31:0] imm_s_sext;
     logic [31:0] imm_b_sext;
@@ -46,7 +43,7 @@ module immediate_generator (
     assign sht_amt_sext = {{27{1'b0}}, sht_amt};
     assign imm_j_sext = {{11{imm_j[20]}}, imm_j};
     assign imm_u_zfill = {imm_u, 12'b0};
-    
+    assign imm_pim_sext = imm_s_sext;
 
     always_comb begin
         o_imm = '0;
@@ -79,6 +76,9 @@ module immediate_generator (
             end
             OPCODE_LUI: begin
                 o_imm = imm_u_zfill;
+            end
+            OPCODE_PIM: begin
+                o_imm = imm_pim_sext;
             end
             default: 
                 o_imm = '0;

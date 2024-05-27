@@ -6,6 +6,7 @@ typedef struct packed {
 
 // Pipe reg: ID/EX
 typedef struct packed {
+    /*debug*/ logic   [31:0]  instr;
     logic   [31:0]  pc;
     logic   [6:0]   opcode;
     logic   [4:0]   rd;         // rd for regfile

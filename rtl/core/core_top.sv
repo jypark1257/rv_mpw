@@ -11,8 +11,6 @@ module core_top #(
     output logic            o_serial_tx
 );
 
-    logic [XLEN-1:0]        data_addr_q;
-
     // RV IMEM I/F
     logic [XLEN-1:0]        instr_addr;
     logic [XLEN-1:0]        instr_rd_data;
@@ -49,6 +47,13 @@ module core_top #(
     // Select between DMA and BUS signal
     logic [XLEN-1:0]        rd_data;
 
+    // PIM BUFFER I/F
+    logic [XLEN-1:0]        buf_addr;
+    logic [XLEN-1:0]        buf_rd_data;
+    logic [XLEN-1:0]        buf_wr_data;
+    logic [3:0]             buf_size;  
+    logic                   buf_read;
+    logic                   buf_write;
     
     // UART
     logic [XLEN-1:0]        uart_addr;
@@ -58,11 +63,19 @@ module core_top #(
     logic                   uart_read;
     logic                   uart_write;
 
+    // PIM BUFFER I/F
+    logic [XLEN-1:0]        pim_addr;
+    logic [XLEN-1:0]        pim_rd_data;
+    logic [XLEN-1:0]        pim_wr_data;
+    logic [3:0]             pim_size;  
+    logic                   pim_read;
+    logic                   pim_write;
+
     // DMA
     logic                   dma_en;
     logic [2:0]             dma_funct3;
     logic [3:0]             dma_sel_pim;
-    logic [11:0]            dma_trans_size;
+    logic [12:0]            dma_trans_size;
     logic [XLEN-1:0]        dma_mem_addr;
     logic                   req_dma;
     logic                   gnt_dma;
@@ -93,12 +106,16 @@ module core_top #(
         .o_req_dmem         (req_dmem),
         .i_gnt_dmem         (gnt_dmem),
         .o_data_addr        (data_addr),
-        .i_data_rd_data     (rd_data),
+        .i_data_rd_data     (data_rd_data),
         .o_data_wr_data     (data_wr_data),
         .o_data_size        (data_size),
         .o_data_read        (data_read),
         .o_data_write       (data_write),
 
+        // dma status
+        .i_dma_busy         (dma_busy),
+
+        // dma interface
         .o_dma_en           (dma_en),
         .o_dma_funct3       (dma_funct3),
         .o_dma_sel_pim      (dma_sel_pim),
@@ -107,10 +124,10 @@ module core_top #(
     );
 
     ids_dma #(
-        .PIM_CTRL           (32'h2000_0010),
-        .PIM_R              (32'h2000_0020),
-        .PIM_W_WEIGHT       (32'h2000_0040),
-        .PIM_W_ACTIVATION   (32'h2000_0080)
+        .PIM_CTRL           (32'h4000_0010),
+        .PIM_R              (32'h4000_0020),
+        .PIM_W_WEIGHT       (32'h4000_0040),
+        .PIM_W_ACTIVATION   (32'h4000_0080)
     ) dma_0 (
         .i_clk              (i_clk),
         .i_rst_n            (i_rst_n),
@@ -132,18 +149,6 @@ module core_top #(
         // busy signal
         .o_dma_busy         (dma_busy)
     );
-
-
-    // DMA control signal read
-    always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
-            data_addr_q <= '0;
-        end else begin
-            data_addr_q <= (data_read) ? data_addr : '0;
-        end
-    end
-        
-    assign rd_data = (data_addr_q == 32'h1000_0000) ? {31'h0, 1'b0} : data_rd_data;  
 
 
     // IDS BUS
@@ -193,14 +198,31 @@ module core_top #(
         .o_dmem_read        (dmem_read),
         .o_dmem_size        (dmem_size),
         .o_dmem_din         (dmem_wr_data),
-        .i_dmem_dout        (dmem_rd_data),   
-        // UART
+        .i_dmem_dout        (dmem_rd_data),
+
+    // PIM BUFFER SRAM
+        .o_buf_addr        (buf_addr),
+        .o_buf_write       (buf_write),
+        .o_buf_read        (buf_read),
+        .o_buf_size        (buf_size),
+        .o_buf_din         (buf_wr_data),
+        .i_buf_dout        (buf_rd_data),  
+
+    // UART
         .o_uart_addr        (uart_addr),
         .o_uart_write       (uart_write),
         .o_uart_read        (uart_read),
         .o_uart_size        (uart_size),
         .o_uart_din         (uart_wr_data),
-        .i_uart_dout        (uart_rd_data)
+        .i_uart_dout        (uart_rd_data),
+
+    // PIM
+        .o_pim_addr        (pim_addr),
+        .o_pim_write       (pim_write),
+        .o_pim_read        (pim_read),
+        .o_pim_size        (pim_size),
+        .o_pim_din         (pim_wr_data),
+        .i_pim_dout        (pim_rd_data)
 
     );
 
@@ -234,6 +256,22 @@ module core_top #(
         .i_data_read        (dmem_read)
     );
 
+    // weight and activation buffer
+    pim_buffer #(
+        .MEM_DEPTH          (28672),
+        .MEM_ADDR_WIDTH     (15)
+    ) buf_0 (
+        .i_clk              (i_clk),
+
+        .i_buf_addr         (buf_addr),
+        .o_buf_rd_data      (buf_rd_data),
+        .i_buf_wr_data      (buf_wr_data),
+        .i_buf_size         (buf_size),
+        .i_buf_write        (buf_write),
+        .i_buf_read         (buf_read)
+    );
+
+    // on-chip uart
     uart_wrap #(
         .CLOCK_FREQ         (CPU_CLOCK_FREQ),
         .BAUD_RATE          (BAUD_RATE)
@@ -248,6 +286,47 @@ module core_top #(
         .o_uart_dout        (uart_rd_data),
         .i_serial_rx        (i_serial_rx),
         .o_serial_tx        (o_serial_tx)
+    );
+
+    // PIM WRAPPER
+    PIM_TOP pim_0 (
+        .i_clk                  (i_clk),
+        .i_rst                  (!i_rst_n),
+
+        // bus interface
+        .i_address              (pim_addr),
+        .i_data                 (pim_wr_data),
+        .o_data                 (pim_rd_data),
+
+        // pim interface
+        .o_weight_out_en0       (),
+        .o_weight_out_en1       (),
+        .o_weight_out_en2       (),
+        .o_weight_out_en3       (),
+        .o_WL_address0          (),
+        .o_WL_address1          (),
+        .o_WL_address2          (),
+        .o_WL_address3          (),
+        .o_cam_data0            (),
+        .o_cam_data1            (),
+        .o_cam_data2            (),
+        .o_cam_data3            (),
+        .o_cim_data0            (),
+        .o_cim_data1            (),
+        .o_cim_data2            (),
+        .o_cim_data3            (),
+        .o_activation_out_en0   (),
+        .o_activation_out_en1   (),
+        .o_activation_out_en2   (),
+        .o_activation_out_en3   (),
+        .o_activation_data0     (),
+        .o_activation_data1     (),
+        .o_activation_data2     (),
+        .o_activation_data3     (),
+        .i_result_in0           (),
+        .i_result_in1           (),
+        .i_result_in2           (),
+        .i_result_in3           ()
     );
 
 

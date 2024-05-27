@@ -28,12 +28,13 @@ async def core_bench(dut):
 
     await RisingEdge(dut.i_clk)
     await Timer(1, units="ns")
-    for idx in range (0, 256):
-        dut.imem_0.imem_sram.mem[idx].value = 0
-        dut.dmem_0.dmem_sram.mem[idx].value = 0
+    for i in range (0, 256):
+        dut.imem_0.imem_sram.mem[i].value = 0
+        dut.dmem_0.dmem_sram.mem[i].value = 0
     await RisingEdge(dut.i_clk)
-    await Timer(1, units="ns")
-
+    for i in range (0, 448):
+        dut.buf_0.buf_sram.mem[i].value = 2**512-1
+    await RisingEdge(dut.i_clk)
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
     with open(imem_path, "r") as mem:
         first_line = mem.readline()
@@ -110,6 +111,7 @@ async def core_bench(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                print(data)
                 dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
@@ -117,8 +119,7 @@ async def core_bench(dut):
 
     dut.i_rst_n.value = 1
 
-    for i in range(1000):
-        print("await", i)
+    for i in range(10000):
         await RisingEdge(dut.i_clk)
 
     

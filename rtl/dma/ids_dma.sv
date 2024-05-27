@@ -1,9 +1,9 @@
 
 module ids_dma #(
-    parameter PIM_CTRL          = 32'h2000_0010,
-    parameter PIM_R             = 32'h2000_0020,
-    parameter PIM_W_WEIGHT      = 32'h2000_0040,
-    parameter PIM_W_ACTIVATION  = 32'h2000_0080
+    parameter PIM_CTRL          = 32'h4000_0010,
+    parameter PIM_R             = 32'h4000_0020,
+    parameter PIM_W_WEIGHT      = 32'h4000_0040,
+    parameter PIM_W_ACTIVATION  = 32'h4000_0080
 ) (
     input                   i_clk,
     input                   i_rst_n,
@@ -15,7 +15,7 @@ module ids_dma #(
     // 3'b100: pim_load
     input           [2:0]   i_funct3,
     input           [3:0]   i_sel_pim,
-    input           [11:0]  i_size,       // maximum available transfer count: 8192 (32K * byte)
+    input           [12:0]  i_size,       // maximum available transfer count: 8192 (32K * byte)
     input           [31:0]  i_mem_addr,
     // bus request 
     output  logic           o_bus_req,
@@ -53,7 +53,7 @@ module ids_dma #(
     // operand fetch
     logic [2:0] funct3;
     logic [3:0] sel_pim;
-    logic [11:0] size;
+    logic [12:0] size;
     logic [31:0] mem_addr;
 
     // current state, next state
@@ -61,9 +61,9 @@ module ids_dma #(
     logic [2:0] next_state;
 
     // counter
-    logic [12:0] trans_counter;     // maximum available transfer count: 8192 (32K * byte)
+    logic [13:0] trans_counter;     // maximum available transfer count: 8192 (32K * byte)
     logic count_start;
-    logic [12:0] data_count;   // GENERATE FROM FSM
+    logic [13:0] data_count;   // GENERATE FROM FSM
     logic trans_running;
 
     // control signals
