@@ -16,7 +16,7 @@ module imem #(
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
         .GWEN           (i_instr_read),
-		.WEN			(i_instr_size),
+		.WEN			(~({4{i_instr_write}} & i_instr_size)),
 		.A 				(i_instr_addr[MEM_ADDR_WIDTH-1:2]),     // 10-bit address
 		.D 				(i_instr_wr_data),
 		.EMA			(3'b000),

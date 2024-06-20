@@ -23,8 +23,8 @@ module uart_com #(
     ) top (
         .i_clk(i_clk),
         .i_rst_n(i_rst_n),
-        .SERIAL_RX(SERIAL_RX),
-        .SERIAL_TX(SERIAL_TX)
+        .i_serial_rx(SERIAL_RX),
+        .o_serial_tx(SERIAL_TX)
     );
 
     // Instantiate the off-chip UART

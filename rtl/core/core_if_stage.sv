@@ -1,7 +1,7 @@
 
 module core_if_stage #(
-    parameter XLEN = 32,
-    parameter RESET_PC = 32'h4000_0000
+    parameter XLEN      = 32,
+    parameter RESET_PC  = 32'h4000_0000
 ) (
     input                       i_clk,
     input                       i_rst_n,
@@ -27,7 +27,7 @@ module core_if_stage #(
         .RESET_PC   (RESET_PC)
     ) pc (
         .i_clk      (i_clk),
-        .i_reset_n  (i_rst_n),
+        .i_rst_n    (i_rst_n),
         .i_pc_write (i_pc_write),
         .i_pc_next  (pc_next),
         .o_pc_curr  (o_pc_curr)
@@ -36,7 +36,7 @@ module core_if_stage #(
     // --------------------------------------------------------
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == 1'b0) begin
             o_pc_instr <= '0;
         end else begin
             if (i_branch_taken) begin

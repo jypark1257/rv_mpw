@@ -1,5 +1,5 @@
 module pim_buffer #(
-    parameter MEM_DEPTH = 28672,
+    parameter MEM_DEPTH = 28672,	//28KB
     parameter MEM_ADDR_WIDTH = 15
 ) (
     input                   i_clk,
@@ -16,7 +16,7 @@ module pim_buffer #(
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
         .GWEN           (i_buf_read),
-		.WEN			(i_buf_size),
+		.WEN			(~({4{i_buf_write}} & i_buf_size)),
 		.A 				(i_buf_addr[MEM_ADDR_WIDTH-1:2]),     // 10-bit address
 		.D 				(i_buf_wr_data),
 		.EMA			(3'b000),

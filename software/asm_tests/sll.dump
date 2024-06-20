@@ -4,7 +4,7 @@ sll.elf:     file format elf32-littleriscv
 
 Disassembly of section .riscv.attributes:
 
-00000000 <begin_signature-0x40000610>:
+00000000 <_ebss-0x40001000>:
    0:	1941                	.insn	2, 0x1941
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
@@ -152,7 +152,7 @@ Disassembly of section .text.init:
 4000019c:	00100113          	li	x2,1
 400001a0:	00209733          	sll	x14,x1,x2
 400001a4:	424243b7          	lui	x7,0x42424
-400001a8:	24238393          	addi	x7,x7,578 # 42424242 <begin_signature+0x2423c32>
+400001a8:	24238393          	addi	x7,x7,578 # 42424242 <_erodata+0x2423142>
 400001ac:	42771263          	bne	x14,x7,400005d0 <fail>
 
 400001b0 <test_14>:
@@ -162,7 +162,7 @@ Disassembly of section .text.init:
 400001bc:	00700113          	li	x2,7
 400001c0:	00209733          	sll	x14,x1,x2
 400001c4:	909093b7          	lui	x7,0x90909
-400001c8:	08038393          	addi	x7,x7,128 # 90909080 <begin_signature+0x50908a70>
+400001c8:	08038393          	addi	x7,x7,128 # 90909080 <_erodata+0x50907f80>
 400001cc:	40771263          	bne	x14,x7,400005d0 <fail>
 
 400001d0 <test_15>:
@@ -200,7 +200,7 @@ Disassembly of section .text.init:
 40000234:	fc100113          	li	x2,-63
 40000238:	00209733          	sll	x14,x1,x2
 4000023c:	424243b7          	lui	x7,0x42424
-40000240:	24238393          	addi	x7,x7,578 # 42424242 <begin_signature+0x2423c32>
+40000240:	24238393          	addi	x7,x7,578 # 42424242 <_erodata+0x2423142>
 40000244:	38771663          	bne	x14,x7,400005d0 <fail>
 
 40000248 <test_19>:
@@ -210,7 +210,7 @@ Disassembly of section .text.init:
 40000254:	fc700113          	li	x2,-57
 40000258:	00209733          	sll	x14,x1,x2
 4000025c:	909093b7          	lui	x7,0x90909
-40000260:	08038393          	addi	x7,x7,128 # 90909080 <begin_signature+0x50908a70>
+40000260:	08038393          	addi	x7,x7,128 # 90909080 <_erodata+0x50907f80>
 40000264:	36771663          	bne	x14,x7,400005d0 <fail>
 
 40000268 <test_20>:
@@ -479,7 +479,7 @@ Disassembly of section .text.init:
 
 400005d0 <fail>:
 400005d0:	eeeef1b7          	lui	x3,0xeeeef
-400005d4:	eee18193          	addi	x3,x3,-274 # eeeeeeee <begin_signature+0xaeeee8de>
+400005d4:	eee18193          	addi	x3,x3,-274 # eeeeeeee <_erodata+0xaeeeddee>
 
 400005d8 <f>:
 400005d8:	0000006f          	j	400005d8 <f>

@@ -1,12 +1,14 @@
 OUTPUT_ARCH( "riscv" )
 
 MEMORY {
-    mem  (rwx): ORIGIN = 0x40000000, LENGTH = 0x00001000
+    imem  (rwx): ORIGIN = 0x40000000, LENGTH = 0x00001000
+    dmem  (rwx): ORIGIN = 0x40001000, LENGTH = 0x00001000
 }
 
 ENTRY(_start)
 SECTIONS
 {
+    /* IMEM */
     . = 0x40000000;
     /* gp is set to start of memory for gp relative addressing of static vars*/
     /* gp start is ram origin + 0x800 --- because offset for load/store is 12b */
@@ -14,20 +16,34 @@ SECTIONS
     .text.init : 
     { 
         *(.init)
-    } > mem
-    . = 0x40000400;
-    .data :
+    } > imem
+
+    /* DMEM */
+    .rodata  :
+    {
+        _srodata = .;
+        *(.rodata)
+        _erodata = .;
+    } > dmem
+    .data 0x40001100:
     {
         PROVIDE(_global_pointer = . + 0x800);
-        PROVIDE(_sdata = .);
-        *(.result)
+        _sdata = .;
         *(.data)
-        PROVIDE(_edata = .);
-    } > mem
+        _edata = .;
+    } > dmem
     .bss :
     {
+        _sbss = .;
         *(.bss)
-    } > mem
+        _ebss = .;
+    } > dmem
     /* Stack Pointer - End of Memory */
-    PROVIDE(_stack_pointer = ORIGIN(mem) + LENGTH(mem));
+    .stack :
+    {
+        PROVIDE(_stack_pointer = ORIGIN(dmem) + LENGTH(dmem));
+        _sstack = .;
+        *(.stack)
+        _estack = .;
+    } > dmem
 }

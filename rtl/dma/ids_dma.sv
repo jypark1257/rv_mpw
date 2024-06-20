@@ -93,7 +93,7 @@ module ids_dma #(
     assign operation_start = i_dma_en && (!trans_running);
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == 1'b0) begin
             funct3 <= '0;
             sel_pim <= '0;
             size <= '0;
@@ -124,7 +124,7 @@ module ids_dma #(
     assign data_count = size;
     
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == 1'b0) begin
             trans_counter <= '0;
         end else begin
             if (count_start) begin
@@ -138,7 +138,7 @@ module ids_dma #(
     // --|FSM|------------------------------------------------------------
     // state transition
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == 1'b0) begin
             curr_state <= IDLE;
         end else begin
             curr_state <= next_state;        

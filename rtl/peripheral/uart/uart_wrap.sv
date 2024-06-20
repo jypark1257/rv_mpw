@@ -1,7 +1,10 @@
 
 module uart_wrap #(
-    parameter CLOCK_FREQ = 125_000_000,
-    parameter BAUD_RATE = 115_200
+    parameter CLOCK_FREQ    = 125_000_000,
+    parameter BAUD_RATE     = 115_200,
+    parameter UART_CTRL     = 32'h8000_0000,
+    parameter UART_RECV     = 32'h8000_0004,
+    parameter UART_TRANS    = 32'h8000_0008
 ) (
     input                   i_clk, 
     input                   i_rst_n, 
@@ -32,7 +35,7 @@ module uart_wrap #(
     logic data_out_valid;
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             uart_addr <= '0;
             uart_read <= '0;
         end else begin
@@ -43,26 +46,26 @@ module uart_wrap #(
     
     // assign inputs
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             data_in <= '0;
             data_in_valid <= '0;
             data_out_ready <= '0;
         end else begin
-            data_in <= ((i_uart_addr == 32'h8000_0008) && (i_uart_write)) ? i_uart_din[7:0] : data_in;
-            data_in_valid <= ((i_uart_addr == 32'h8000_0008) && (i_uart_write));
-            data_out_ready <= ((i_uart_addr == 32'h8000_0004) && (i_uart_read));
+            data_in <= ((i_uart_addr == UART_TRANS) && (i_uart_write)) ? i_uart_din[7:0] : data_in;
+            data_in_valid <= ((i_uart_addr == UART_TRANS) && (i_uart_write));
+            data_out_ready <= ((i_uart_addr == UART_RECV) && (i_uart_read));
         end
     end
 
     always_comb begin
-        if (!uart_read) begin
+        if (uart_read == '0) begin
             o_uart_dout = '0;
         end else begin
             case (uart_addr)
-                32'h8000_0000: begin    
+                UART_CTRL: begin    
                     o_uart_dout = {30'b0, data_out_valid, data_in_ready};
                 end
-                32'h8000_0004: begin
+                UART_RECV: begin
                     o_uart_dout = {24'b0, data_out};
                 end
                 default: begin
@@ -73,7 +76,7 @@ module uart_wrap #(
     end
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             uart_addr <= '0;
         end else begin
             uart_addr <= i_uart_addr;

@@ -1,3 +1,5 @@
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+
 module core #(
     parameter XLEN = 32,
     parameter FLEN = 32,
@@ -100,14 +102,14 @@ module core #(
 
     // Instruction memory
     logic [XLEN-1:0] instr;
-    assign pc_write = (!stall) ? 1'b1 : 1'b0;
+    assign pc_write = (stall == 1'b0) ? 1'b1 : 1'b0;
 
     // instruction memory interface
     assign o_instr_addr = (branch_taken) ? pc_branch : pc_curr;
     assign instr = i_instr_rd_data;
     assign o_instr_wr_data = '0;
     assign o_instr_size = 4'b1111;        // always 32-bit access
-    assign o_instr_read = (!stall) ? 1'b1 : 1'b0;
+    assign o_instr_read = (stall == 1'b0) ? 1'b1 : 1'b0;
     assign o_instr_write = 1'b0;
 
 
@@ -119,7 +121,7 @@ module core #(
 
     // IF/ID pipeline register
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             id <= '0;
         end else begin
             if (if_flush) begin
@@ -167,26 +169,19 @@ module core #(
     // --------------------------------------------------------
 
     // request for dmem use
-    assign o_req_dmem = ((mem_read || mem_write) && (!stall));
+    assign o_req_dmem = ((mem_read || mem_write) && (stall == 1'b0));
     
 
     // --------------------------------------------------------
-    /* DEBUG */
-    logic [31:0] ex_instr;
-    logic [31:0] id_instr;
-    assign id_instr = id.instr;
-    assign ex_instr = ex.instr;
-    /*       */
     assign id_flush = (branch_taken || stall) ? 1 : 0;
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             ex <= '0;
         end else begin
             if (id_flush) begin
                 ex <= '0;
             end else begin
-                ex.instr <= id.instr;
                 ex.pc <= id.pc;
                 ex.opcode <= opcode;
                 ex.rd <= rd;
@@ -286,7 +281,7 @@ module core #(
     // --------------------------------------------------------
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (~i_rst_n) begin
+        if (i_rst_n == '0) begin
             wb <= '0;
         end else begin
             wb.pc_plus_4 <= ex.pc + 4;

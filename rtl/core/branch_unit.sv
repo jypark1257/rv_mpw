@@ -1,3 +1,5 @@
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+
 module branch_unit #(
     parameter XLEN = 32
 ) (
@@ -17,11 +19,11 @@ module branch_unit #(
         o_pc_branch = '0;
 
         case (i_opcode)
-            OPCODE_JAL: begin
+            `OPCODE_JAL: begin
                 o_branch_taken = 1'b1;
                 o_pc_branch = i_pc + i_imm;
             end
-            OPCODE_JALR: begin
+            `OPCODE_JALR: begin
                 if (i_funct3 == 3'h0) begin
                     o_branch_taken = 1'b1;
                     o_pc_branch = i_rs1_dout + i_imm;
@@ -30,25 +32,25 @@ module branch_unit #(
                     // invalid branch pc
                 end
             end
-            OPCODE_BRANCH: begin
+            `OPCODE_BRANCH: begin
                 o_pc_branch = i_pc + i_imm;
                 case (i_funct3)
-                    BRANCH_BEQ: begin
+                    `BRANCH_BEQ: begin
                         o_branch_taken = (i_alu_zero) ? 1'b1 : 1'b0;
                     end
-                    BRANCH_BNE: begin
+                    `BRANCH_BNE: begin
                         o_branch_taken = (!i_alu_zero) ? 1'b1 : 1'b0;
                     end
-                    BRANCH_BLT: begin
+                    `BRANCH_BLT: begin
                         o_branch_taken = (!i_alu_zero) ? 1'b1 : 1'b0;
                     end
-                    BRANCH_BGE: begin
+                    `BRANCH_BGE: begin
                         o_branch_taken = (i_alu_zero) ? 1'b1 : 1'b0;
                     end
-                    BRANCH_BLTU: begin
+                    `BRANCH_BLTU: begin
                         o_branch_taken = (!i_alu_zero) ? 1'b1 : 1'b0;
                     end
-                    BRANCH_BGEU: begin
+                    `BRANCH_BGEU: begin
                         o_branch_taken = (i_alu_zero) ? 1'b1 : 1'b0;
                     end 
                     default: begin

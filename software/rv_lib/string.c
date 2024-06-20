@@ -28,3 +28,4 @@ uint32_t strlen(const int8_t* s)
     for ( ; s[i] != '\0'; i++) ;
     return i;
 }
+

@@ -1,3 +1,4 @@
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
 
 module core_ex_stage #(
     parameter XLEN = 32
@@ -39,10 +40,6 @@ module core_ex_stage #(
     );
 
     // Forwarding unit
-    localparam OPCODE_R = 7'b0110011;
-    localparam OPCODE_STORE = 7'b0100011;
-    localparam OPCODE_BRANCH = 7'b1100011;
-    localparam OPCODE_AUIPC = 7'b0010111;
     forwarding_unit f_u (
         .i_opcode           (i_opcode),
         .i_rs1              (i_rs1),
@@ -59,7 +56,7 @@ module core_ex_stage #(
         if (forward_a == 2'b10) begin   // WB STAGE
             o_forward_in1 = i_rd_din;
         end else begin
-            if (i_opcode == OPCODE_AUIPC) begin
+            if (i_opcode == `OPCODE_AUIPC) begin
                 o_forward_in1 = i_pc;
             end else begin
                 o_forward_in1 = i_rs1_dout;
@@ -72,7 +69,7 @@ module core_ex_stage #(
         if (forward_b == 2'b10) begin   // WB STAGE
             o_forward_in2 = i_rd_din;
         end else begin
-            if ((i_opcode == OPCODE_R) || (i_opcode == OPCODE_STORE) || (i_opcode == OPCODE_BRANCH) || (i_opcode == OPCODE_PIM)) begin
+            if ((i_opcode == `OPCODE_R) || (i_opcode == `OPCODE_STORE) || (i_opcode == `OPCODE_BRANCH) || (i_opcode == `OPCODE_PIM)) begin
                 o_forward_in2 = i_rs2_dout;
             end else begin
                 o_forward_in2 = i_imm;
@@ -83,9 +80,9 @@ module core_ex_stage #(
     logic [31:0] alu_in2;
 
     always @(*) begin
-        if (i_opcode == OPCODE_STORE) begin
+        if (i_opcode == `OPCODE_STORE) begin
             alu_in2 = i_imm;
-        end else if (i_opcode == OPCODE_R) begin
+        end else if (i_opcode == `OPCODE_R) begin
             if ((i_funct3 == 3'h1) || (i_funct3 == 3'h5)) begin
                 alu_in2 = {27'b0, o_forward_in2[4:0]};
             end else begin
@@ -96,7 +93,7 @@ module core_ex_stage #(
         end
     end
 
-    // assign alu_in2 = (i_opcode == OPCODE_STORE) ? i_imm : o_forward_in2;
+    // assign alu_in2 = (i_opcode == `OPCODE_STORE) ? i_imm : o_forward_in2;
 
     // Arithmetic logic unit
     alu #(

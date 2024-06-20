@@ -2,7 +2,6 @@ module PIM_TOP (
 	input i_clk, 
 	input i_rst,
 
-
 	//RISCV I/O
 	input [31:0] i_address,
 	input [31:0] i_data,
@@ -31,10 +30,10 @@ module PIM_TOP (
 	output o_activation_out_en1,
 	output o_activation_out_en2,
 	output o_activation_out_en3,
-	output [287:0] o_activation_data0,
-	output [287:0] o_activation_data1,
-	output [287:0] o_activation_data2,
-	output [287:0] o_activation_data3,
+	output [287:0] o_activation_out_data0,
+	output [287:0] o_activation_out_data1,
+	output [287:0] o_activation_out_data2,
+	output [287:0] o_activation_out_data3,
 
 	//result
 	input [8191:0] i_result_in0,
@@ -47,94 +46,82 @@ module PIM_TOP (
 	wire pim_control_read;
 	wire busy, valid;
 
-	wire weight_in_en, weight_out_en;
+	wire weight_in_en, weight_out_en, weight_buffer_busy;
 	wire [1:0] weight_sel;
-	wire [8:0] WL_address;
+	wire [8:0] WL_address, WL_address_tmp;
+	wire [31:0] weight_in_data;
 	wire [255:0] cam_data;
 	wire [255:0] cim_data;
 
-	wire activation_in_en, activation_out_en;
+	wire activation_in_en, activation_out_en, activation_buffer_busy;
 	wire [1:0] activation_sel;
-	wire [287:0] activation_data;
+	wire [31:0] actvation_in_data;
+	wire [287:0] activation_out_data;
 
-	wire result_in_en, result_out_en;
+	wire result_in_en, result_out_en, result_buffer_busy;
 	wire [8191:0] result_in;
 	wire [31:0] result_out;
 
-	// always @(*) begin
-	// 	if (i_rst) begin
-	// 		result_in = 0;
-	// 	end else begin
-	// 		if (i_result_in0 != 0) begin
-	// 			result_in = i_result_in0;
-	// 		end else if (i_result_in1 != 0) begin
-	// 			result_in = i_result_in1;
-	// 		end else if (i_result_in2 != 0) begin
-	// 			result_in = i_result_in2;
-	// 		end else if (i_result_in3 != 0) begin
-	// 			result_in = i_result_in3;
-	// 		end else begin
-	// 			result_in = 0;
-	// 		end
-	// 	end
-	// end
-
+	
 	pim_controller controller(
-		.i_clk					(i_clk), 
-		.i_rst					(i_rst),
-		.i_address				(i_address),
+		.i_clk						(i_clk), 
+		.i_rst						(i_rst),
+		.i_address					(i_address),
 
-		.o_weight_in_en			(weight_in_en),	
-		.o_weight_out_en		(weight_out_en),
-		.o_weight_sel			(weight_sel),
-		.o_WL_address			(WL_address),
+		.o_weight_buffer_busy		(weight_buffer_busy),
+		.o_weight_in_en				(weight_in_en),	
+		.o_weight_out_en			(weight_out_en),
+		.o_weight_sel				(weight_sel),
+		.o_WL_address				(WL_address_tmp),
 
-		.o_activation_in_en		(activation_in_en),
-		.o_activation_out_en	(activation_out_en),
-		.o_activation_sel		(activation_sel),
+		.o_activation_buffer_busy	(activation_buffer_busy),
+		.o_activation_in_en			(activation_in_en),
+		.o_activation_out_en		(activation_out_en),
+		.o_activation_sel			(activation_sel),
 
-		.o_result_in_en			(result_in_en),
-		.o_result_out_en		(result_out_en),
+		.o_result_buffer_busy		(result_buffer_busy),
+		.o_result_in_en				(result_in_en),
+		.o_result_out_en			(result_out_en),
 
-		.o_counter				(counter),
-		.o_busy					(busy),
-		.o_valid				(valid),
-		.o_pim_control_read		(pim_control_read)
+		.o_counter					(counter),
+		.o_busy						(busy),
+		.o_valid					(valid),
+		.o_pim_control_read			(pim_control_read)
 	);
 
-	wire a1, a2;
-
 	weight_buffer WB (
-		.i_clk					(i_clk),
-		.i_rst					(i_rst),
-		.i_weight_in_en			(weight_in_en),			
-		.i_weight_out_en		(weight_out_en),
-		.i_counter				(counter[3:0]),
-		.i_data					(i_data),
-		.o_cam_data				(cam_data),
-		.o_cim_data				(cim_data)
+		.i_clk						(i_clk),
+		.i_rst						(i_rst),
+		.i_weight_buffer_busy		(weight_buffer_busy),
+		.i_weight_in_en				(weight_in_en),			
+		.i_weight_out_en			(weight_out_en),
+		.i_counter					(counter[3:0]),
+		.i_data						(weight_in_data),
+		.o_cam_data					(cam_data),
+		.o_cim_data					(cim_data)
 	);
 
 	activation_buffer AB (
-		.i_clk					(i_clk),
-		.i_rst					(i_rst),
-		.i_activation_in_en		(activation_in_en),		
-		.i_activation_out_en	(activation_out_en),
-		.i_counter				(counter),
-		.i_data					(i_data),
-		.o_data					(activation_data)
+		.i_clk						(i_clk),
+		.i_rst						(i_rst),
+		.i_activation_buffer_busy	(activation_buffer_busy),
+		.i_activation_in_en			(activation_in_en),		
+		.i_activation_out_en		(activation_out_en),
+		.i_counter					(counter),
+		.i_data						(actvation_in_data),
+		.o_data						(activation_out_data)
 	);
 
 	result_buffer RB (
 		.i_clk					(i_clk),
 		.i_rst					(i_rst),
+		.i_result_buffer_busy	(result_buffer_busy),
 		.i_result_in_en			(result_in_en),
 		.i_result_out_en		(result_out_en),
 		.i_counter				(counter),
 		.i_data					(result_in),
 		.o_data					(result_out)
 	);
-
 
 	dmux  #(
 		.width			(256)
@@ -169,6 +156,8 @@ module PIM_TOP (
 		.o_out3			(o_weight_out_en3)
 	);
 
+	assign WL_address = weight_out_en ? WL_address_tmp : 9'd288;
+
 	dmux  #(
 		.width			(9)
 	) WL_address_sel (
@@ -193,13 +182,13 @@ module PIM_TOP (
 
 	dmux  #(
 		.width			(288)
-	) activation_data_sel (
-		.i_in			(activation_data),
+	) activation_out_data_sel (
+		.i_in			(activation_out_data),
 		.i_sel			(activation_sel),
-		.o_out0			(o_activation_data0),
-		.o_out1			(o_activation_data1),
-		.o_out2			(o_activation_data2),
-		.o_out3			(o_activation_data3)
+		.o_out0			(o_activation_out_data0),
+		.o_out1			(o_activation_out_data1),
+		.o_out2			(o_activation_out_data2),
+		.o_out3			(o_activation_out_data3)
 	);
 
 	mux #(
@@ -213,8 +202,9 @@ module PIM_TOP (
 		.o_out			(result_in)
 	);
 
-	assign o_data = pim_control_read ? {30'b0, valid, busy} : result_out;
+	assign weight_in_data = weight_buffer_busy ? i_data : 32'b0;
+	assign actvation_in_data = activation_buffer_busy ? i_data : 32'b0;
 
-
+	assign o_data = pim_control_read ? {32'b0, valid, busy} : result_out;
 
 endmodule

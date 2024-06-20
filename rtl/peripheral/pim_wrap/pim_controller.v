@@ -2,20 +2,22 @@ module pim_controller (
 	input i_clk, 
 	input i_rst,
 	input [31:0] i_address,
-
+	
+	output o_weight_buffer_busy,
 	output reg o_weight_in_en,
 	output reg o_weight_out_en,
 	output reg [1:0] o_weight_sel,
 	output reg [8:0] o_WL_address,
 
+	output o_activation_buffer_busy,
 	output reg o_activation_in_en,
 	output reg o_activation_out_en,
 	output reg [1:0] o_activation_sel,
 
-	output reg o_result_in_en,
+	output o_result_buffer_busy,
+	output o_result_in_en,
 	output reg o_result_out_en,
 	
-
 	output reg [7:0] o_counter,
 	output reg o_busy,
 	output reg o_valid,
@@ -27,17 +29,19 @@ module pim_controller (
 		if (i_rst) begin
 			o_counter <= 0;
 		end else begin
-			if (weight_in_en) begin 
+			if (o_weight_buffer_busy) begin 
 				if (o_weight_in_en) begin 
 					o_counter <= o_counter + 1;
 				end
 			end else if (activation_in_en) begin 
 				if (o_activation_in_en) begin 
-					o_counter  <= o_counter + 1;
+					if (o_counter == 8'd8) begin
+						o_counter  <= 0;
+					end else begin
+						o_counter  <= o_counter + 1;
+					end
 				end
-			end else if (compute_en) begin 
-				o_counter <= o_counter + 1;
-			end	else if (result_in_en) begin
+			end else if (result_in_en) begin
 				o_counter <= o_counter + 1;
 			end else if (result_out_en) begin
 				if (o_result_out_en) begin
@@ -54,13 +58,11 @@ module pim_controller (
 		if (i_rst) begin
 			o_busy = 0;
 		end else begin
-			if (weight_in_en) begin 
+			if (o_weight_buffer_busy) begin 
 				o_busy = 1;
-			end else if (activation_in_en) begin 
+			end else if (activation_in_en | activation_in_end) begin 
 				o_busy = 1;
-			end else if (compute_en | compute_en_q) begin 
-				o_busy = 1;
-			end	else if (result_in_en) begin
+			end else if (result_in_en) begin
 				o_busy = 1;
 			end else if (result_out_en) begin
 				o_busy = 1;
@@ -120,7 +122,7 @@ module pim_controller (
 		if (i_rst) begin
 			o_weight_out_en <= 0;
 		end else begin
-			if (weight_in_en) begin 
+			if (o_weight_buffer_busy) begin 
 				if (o_weight_in_en) begin 
 					if (o_counter[3:0] == 4'd15) begin 
 						o_weight_out_en <= 1;
@@ -137,49 +139,48 @@ module pim_controller (
  	end
 
 	//weight select
-	always @(posedge i_clk) begin
+	always @(*) begin
 		if (i_rst) begin
-			o_weight_sel <= 0;
+			o_weight_sel = 0;
 		end else begin
 			if (o_weight_in_en) begin
 				case (i_address) 
 					32'h4000_0041: begin
-						o_weight_sel <= 2'b00;
+						o_weight_sel = 2'b00;
 					end
 					32'h4000_0042: begin
-						o_weight_sel <= 2'b01;
+						o_weight_sel = 2'b01;
 					end
 					32'h4000_0044: begin
-						o_weight_sel <= 2'b10;
+						o_weight_sel = 2'b10;
 					end
 					32'h4000_0048: begin
-						o_weight_sel <= 2'b11;
-					end
-					default: begin
-						o_weight_sel <= 2'b00;
+						o_weight_sel = 2'b11;
 					end
 				endcase
 			end
 		end
 	end
 
-
 	//o_WL_address 
 	always @(posedge i_clk) begin
 		if (i_rst) begin
 			o_WL_address <= 0;
 		end else begin
-			if (o_weight_out_en) begin 
-				if (o_WL_address == 9'd287) begin //287로 바꾸기!!!
-					o_WL_address <= 0;
-				end else begin
-					o_WL_address <= o_WL_address + 1;
+			if (o_weight_buffer_busy) begin
+				if (o_weight_out_en) begin 
+					if (o_WL_address == 9'd287) begin
+						o_WL_address <= 0;
+					end else begin
+						o_WL_address <= o_WL_address + 1;
+					end
 				end
+			end else begin
+				o_WL_address <= 0;
 			end
 		end
 	end
 	
-
 	//activation_in_en signal generate
 	always @(*) begin
 		case (i_address) 
@@ -201,18 +202,29 @@ module pim_controller (
 		endcase
 	end
 
+	reg activation_in_en_1;
+	always @(posedge i_clk) begin
+		if (i_rst) begin
+			activation_in_en_1 <= 0;
+		end else begin
+			activation_in_en_1 <= activation_in_en;
+		end
+	end
+
+	wire activation_in_end;
+	assign activation_in_end = ~(activation_in_en | ~activation_in_en_1);
+
 	//o_activation_out_en
 	always @(posedge i_clk) begin
 		if (i_rst) begin
 			o_activation_out_en <= 0;
 		end else begin
-			if (compute_en) begin 
-				o_counter <= o_counter +1;
-				if (o_counter[2:0] == 3'b111) begin
+			if (o_activation_in_en) begin
+				if (o_counter == 8'd8) begin
 					o_activation_out_en <= 1;
 				end else begin
 					o_activation_out_en <= 0;
-				end	
+				end
 			end	else begin
 				o_activation_out_en <= 0;
 			end
@@ -220,49 +232,28 @@ module pim_controller (
  	end
 
 	//activation select
-	always @(posedge i_clk) begin
+	always @(*) begin
 		if (i_rst) begin
-			o_activation_sel <= 0;
+			o_activation_sel = 0;
 		end else begin
 			if (o_activation_in_en) begin
 				case (i_address) 
 					32'h4000_0081: begin
-						o_activation_sel <= 2'b00;
+						o_activation_sel = 2'b00;
 					end
 					32'h4000_0082: begin
-						o_activation_sel <= 2'b01;
+						o_activation_sel = 2'b01;
 					end
 					32'h4000_0084: begin
-						o_activation_sel <= 2'b10;
+						o_activation_sel = 2'b10;
 					end
 					32'h4000_0088: begin
-						o_activation_sel <= 2'b11;
-					end
-					default: begin
-						o_activation_sel <= 2'b00;
+						o_activation_sel = 2'b11;
 					end
 				endcase
 			end
 		end
 	end
-
-	//compute_en_q
-	reg compute_en_q;
-	always @(posedge i_clk) begin
-		if (i_rst) begin
-			compute_en_q <= 0;
-		end else begin
-			if (activation_in_en) begin 
-				if (o_counter == 8'd72) begin
-					compute_en_q <= 1;
-				end
-			end else if (compute_en) begin 
-				if (o_counter == 8'd63) begin
-					compute_en_q <= 0;
-				end
-			end	
-		end
- 	end
 
 	//result_in_en
 	reg result_in_en;
@@ -270,65 +261,33 @@ module pim_controller (
 		if (i_rst) begin
 			result_in_en <= 0;
 		end else begin
-			if (compute_en) begin 
-				if (o_counter == 8'd64) begin
-					result_in_en <= 1;
-				end
-			end	else if (o_result_in_en) begin
+			if (activation_in_end) begin 
+				result_in_en <= 1;
+			end else if (o_result_in_en) begin
 				result_in_en <= 0;
 			end
 		end
  	end
 
-	//o_result_in_en
-	always @(posedge i_clk) begin
-		if (i_rst) begin
-			o_result_in_en <= 0;
-		end else begin
-			if (result_in_en) begin
-				if (o_counter == 8'd71) begin
-					o_result_in_en <= 1;
-				end else begin
-					o_result_in_en <= 0;
-				end
-			end
-		end
- 	end
+	assign o_result_in_en = (result_in_en && (o_counter == 8'd6)) ? 1 : 0;
 
-	//result_out
-	always @(*) begin
-		if (i_rst) begin
-			result_out_en_1 = 0;
-		end else begin
-			if (i_address == 32'h4000_0020) begin
-				result_out_en_1 = 1;
-			end else begin
-				result_out_en_1 = 0;
-			end
-		end
-	end
+	wire result_out_en_1; 
+	assign result_out_en_1 = (i_address == 32'h4000_0020) ? 1 : 0;
 
-
-	reg compute_en;
-	reg weight_in_en_d, activation_in_en_d;
-	reg result_out_en_1, result_out_en_2;
-	
-	wire weight_in_en, activation_in_en;
+	wire activation_in_en;
 	wire result_out_en;
-	
-	assign weight_in_en = o_weight_in_en | weight_in_en_d;
 	assign activation_in_en = o_activation_in_en | activation_in_en_d;
 	assign result_out_en = o_result_out_en | result_out_en_2;
 	
+	reg weight_in_en_d, activation_in_en_d;
+	reg result_out_en_2;
 	always @(posedge i_clk) begin
 		if (i_rst) begin
-			compute_en <= 0;
 			weight_in_en_d <= 0;
 			activation_in_en_d <= 0;
 			o_result_out_en <= 0;
 			result_out_en_2 <= 0;
 		end else begin
-			compute_en <= compute_en_q;
 			weight_in_en_d <= o_weight_in_en;
 			activation_in_en_d <= o_activation_in_en;
 			o_result_out_en <= result_out_en_1;
@@ -336,115 +295,25 @@ module pim_controller (
 		end
 	end
 
-	
-
-
-endmodule
-
-
-
-
-
-
-/*
-module pim_controller (
-	input i_clk, 
-	input i_rst,
-	input i_weight_en,
-	input i_activation_en,
-	input i_compute_en,
-	output reg o_weight_out_en,
-	output reg o_activation_out_en,
-	output reg o_output_in_en,
-	output reg [6:0] o_counter,
-	output reg [1:0] o_weight_sel,
-	output reg [8:0] o_WL_address
-);
-
-	reg output_in_en, output_in_en_d;
-	// reg compute_en, compute_en_d;
-
-	always @(posedge i_clk) begin
+	reg result_buffer_busy;
+	always @(posedge i_clk)	begin
 		if (i_rst) begin
-			o_counter <= 0;
-			o_WL_address <= 9'b111111111;
-			o_weight_out_en <= 0;
-			o_activation_out_en <= 0;
-			o_output_in_en <= 0;
-			output_in_en <= 0;
-			output_in_en_d <= 0;
-			// compute_en <= 0;
-			// compute_en_d <= 0;
-			o_weight_sel <= 0;
+			result_buffer_busy <= 0;
 		end else begin
-			output_in_en_d <= output_in_en;
-			// compute_en_d <= compute_en;
-			if (i_weight_en) begin //store weight to pim
-				o_counter <= o_counter + 1;
-				if (o_counter[3:0] == 4'd15) begin 
-					o_weight_out_en <= 1;
-					o_WL_address <= o_WL_address + 1;
-				end else begin
-					o_weight_out_en <= 0;
-				end
-			end else if (i_activation_en) begin //load activation to buffer
-				o_counter  <= o_counter + 1;
-				// if (o_counter == 7'd71) begin
-				// 	compute_en <= 1;
-				// end
-			end else if (i_compute_en) begin //load atctivation to pim
-				o_counter <= o_counter +1;
-				if (o_counter[2:0] == 3'b111) begin
-					o_activation_out_en <= 1;
-				end else begin
-					o_activation_out_en <= 0;
-				end	
-				if (o_counter == 7'd63) begin
-					output_in_en <= 1;
-				end
-			end	else if (output_in_en_d) begin
-				o_counter <= o_counter + 1;
-				if (o_counter == 7'd6) begin
-					o_output_in_en <= 1;
-				end else if (o_counter == 7'd7) begin
-					o_output_in_en <= 0;
-				end
-			end else begin
-				o_counter <= 0;
-				o_weight_out_en <= 0;
-				o_activation_out_en <= 0;
+			if (o_result_in_en) begin
+				result_buffer_busy <= 1;
+			end else if (result_out_en_1) begin
+				result_buffer_busy <= 0;
 			end
-			// if (output_in_en_d) begin
-			// 	o_counter <= o_counter + 1;
-			// 	if (o_counter == 7'd6) begin
-			// 		o_output_in_en <= 1;
-			// 	end else if (o_counter == 7'd7) begin
-			// 		o_output_in_en <= 0;
-			// 	end
-			// end
-		end
- 	end
-
-
-	// always @(posedge o_weight_out_en) begin
-	// 	o_WL_address <= o_WL_address + 1;
-	// 	if (o_WL_address == 9'd3) begin
-	// 			o_WL_address <= 0;
-	// 	end
-	// end
-
-
-	///////////////////////////////////////
-	always @(o_WL_address) begin
-		if (o_WL_address == 9'd4) begin
-			o_weight_sel <= o_weight_sel + 1;
-			o_WL_address <= 0;
 		end
 	end
-	///////////////////////////////////////
 
+	//pim instruction 끝나면 초기화 할 수 있도록
+	assign o_weight_buffer_busy = o_weight_in_en | weight_in_en_d;
+	assign o_activation_buffer_busy = activation_in_en | activation_in_end;
+	assign o_result_buffer_busy = result_buffer_busy | o_result_in_en | result_out_en;
 
 endmodule
 
 
-*/
+

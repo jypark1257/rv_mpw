@@ -1,3 +1,5 @@
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+
 module alu_control_unit (
     input           [6:0]   i_opcode,
     input           [6:0]   i_funct7,
@@ -18,70 +20,70 @@ module alu_control_unit (
     localparam ALU_SLT = 5'b1_0111;
 
     always_comb begin
-        if (i_opcode == OPCODE_BRANCH) begin
+        if (i_opcode == `OPCODE_BRANCH) begin
             case (i_funct3)
-                BRANCH_BEQ: begin
+                `BRANCH_BEQ: begin
                     o_alu_control = ALU_SUB;
                 end
-                BRANCH_BNE: begin
+                `BRANCH_BNE: begin
                     o_alu_control = ALU_SUB;
                 end
-                BRANCH_BLT: begin
+                `BRANCH_BLT: begin
                     o_alu_control = ALU_SLT;
                 end
-                BRANCH_BGE: begin
+                `BRANCH_BGE: begin
                     o_alu_control = ALU_SLT;
                 end
-                BRANCH_BLTU: begin
+                `BRANCH_BLTU: begin
                     o_alu_control = ALU_SLTU;
                 end
-                BRANCH_BGEU: begin
+                `BRANCH_BGEU: begin
                     o_alu_control = ALU_SLTU;
                 end
                 default: begin
                     o_alu_control = ALU_SUB;
                 end
             endcase
-        end else if ((i_opcode == OPCODE_R) || (i_opcode == OPCODE_I)) begin
+        end else if ((i_opcode == `OPCODE_R) || (i_opcode == `OPCODE_I)) begin
             case (i_funct3)
-                FUNCT3_ADD_SUB: begin
-                    if (i_opcode == OPCODE_R) begin
-                        if (i_funct7 == 7'h20) begin            // FUNCT3_SUB
+                `FUNCT3_ADD_SUB: begin
+                    if (i_opcode == `OPCODE_R) begin
+                        if (i_funct7 == 7'h20) begin            // `FUNCT3_SUB
                             o_alu_control = ALU_SUB;
-                        end else if (i_funct7 == 7'h00) begin   // FUNCT3_ADD
+                        end else if (i_funct7 == 7'h00) begin   // `FUNCT3_ADD
                             o_alu_control = ALU_ADD;
                         end else begin
                             o_alu_control = ALU_ADD;
                         end
                     end else begin
-                        o_alu_control = ALU_ADD;                // OPCODE_I
+                        o_alu_control = ALU_ADD;                // `OPCODE_I
                     end
                 end
-                FUNCT3_SLL: begin
+                `FUNCT3_SLL: begin
                     o_alu_control = ALU_SLL;
                 end
-                FUNCT3_SLT: begin
+                `FUNCT3_SLT: begin
                     o_alu_control = ALU_SLT;
                 end
-                FUNCT3_SLTU: begin
+                `FUNCT3_SLTU: begin
                     o_alu_control = ALU_SLTU;
                 end
-                FUNCT3_XOR: begin
+                `FUNCT3_XOR: begin
                     o_alu_control = ALU_XOR;
                 end
-                FUNCT3_SRL_SRA: begin
-                    if (i_funct7 == 7'h00) begin            // FUNCT3_SRL
+                `FUNCT3_SRL_SRA: begin
+                    if (i_funct7 == 7'h00) begin            // `FUNCT3_SRL
                         o_alu_control = ALU_SRL;
-                    end else if (i_funct7 == 7'h20) begin   // FUNCT3_SRA
+                    end else if (i_funct7 == 7'h20) begin   // `FUNCT3_SRA
                         o_alu_control = ALU_SRA;
                     end else begin
                         o_alu_control = ALU_ADD;
                     end
                 end
-                FUNCT3_OR: begin
+                `FUNCT3_OR: begin
                     o_alu_control = ALU_OR;
                 end
-                FUNCT3_AND: begin
+                `FUNCT3_AND: begin
                     o_alu_control = ALU_AND;
                 end 
                 default: begin

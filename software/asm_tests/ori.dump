@@ -4,7 +4,7 @@ ori.elf:     file format elf32-littleriscv
 
 Disassembly of section .riscv.attributes:
 
-00000000 <begin_signature-0x40000290>:
+00000000 <_ebss-0x40001000>:
    0:	1941                	.insn	2, 0x1941
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
@@ -58,7 +58,7 @@ Disassembly of section .text.init:
 40000080 <test_2>:
 40000080:	00200193          	li	x3,2
 40000084:	ff0100b7          	lui	x1,0xff010
-40000088:	f0008093          	addi	x1,x1,-256 # ff00ff00 <begin_signature+0xbf00fc70>
+40000088:	f0008093          	addi	x1,x1,-256 # ff00ff00 <_erodata+0xbf00ee00>
 4000008c:	f0f0e713          	ori	x14,x1,-241
 40000090:	f0f00393          	li	x7,-241
 40000094:	1c771463          	bne	x14,x7,4000025c <fail>
@@ -84,19 +84,19 @@ Disassembly of section .text.init:
 400000d0 <test_5>:
 400000d0:	00500193          	li	x3,5
 400000d4:	f00ff0b7          	lui	x1,0xf00ff
-400000d8:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+400000d8:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 400000dc:	0f00e713          	ori	x14,x1,240
 400000e0:	f00ff3b7          	lui	x7,0xf00ff
-400000e4:	0ff38393          	addi	x7,x7,255 # f00ff0ff <begin_signature+0xb00fee6f>
+400000e4:	0ff38393          	addi	x7,x7,255 # f00ff0ff <_erodata+0xb00fdfff>
 400000e8:	16771a63          	bne	x14,x7,4000025c <fail>
 
 400000ec <test_6>:
 400000ec:	00600193          	li	x3,6
 400000f0:	ff0100b7          	lui	x1,0xff010
-400000f4:	f0008093          	addi	x1,x1,-256 # ff00ff00 <begin_signature+0xbf00fc70>
+400000f4:	f0008093          	addi	x1,x1,-256 # ff00ff00 <_erodata+0xbf00ee00>
 400000f8:	0f00e093          	ori	x1,x1,240
 400000fc:	ff0103b7          	lui	x7,0xff010
-40000100:	ff038393          	addi	x7,x7,-16 # ff00fff0 <begin_signature+0xbf00fd60>
+40000100:	ff038393          	addi	x7,x7,-16 # ff00fff0 <_erodata+0xbf00eef0>
 40000104:	14709c63          	bne	x1,x7,4000025c <fail>
 
 40000108 <test_7>:
@@ -132,7 +132,7 @@ Disassembly of section .text.init:
 4000016c:	00900193          	li	x3,9
 40000170:	00000213          	li	x4,0
 40000174:	f00ff0b7          	lui	x1,0xf00ff
-40000178:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+40000178:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 4000017c:	0f00e713          	ori	x14,x1,240
 40000180:	00000013          	nop
 40000184:	00000013          	nop
@@ -141,7 +141,7 @@ Disassembly of section .text.init:
 40000190:	00200293          	li	x5,2
 40000194:	fe5210e3          	bne	x4,x5,40000174 <test_9+0x8>
 40000198:	f00ff3b7          	lui	x7,0xf00ff
-4000019c:	0ff38393          	addi	x7,x7,255 # f00ff0ff <begin_signature+0xb00fee6f>
+4000019c:	0ff38393          	addi	x7,x7,255 # f00ff0ff <_erodata+0xb00fdfff>
 400001a0:	0a731e63          	bne	x6,x7,4000025c <fail>
 
 400001a4 <test_10>:
@@ -174,7 +174,7 @@ Disassembly of section .text.init:
 400001fc:	00c00193          	li	x3,12
 40000200:	00000213          	li	x4,0
 40000204:	f00ff0b7          	lui	x1,0xf00ff
-40000208:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+40000208:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 4000020c:	00000013          	nop
 40000210:	00000013          	nop
 40000214:	0f00e713          	ori	x14,x1,240
@@ -182,7 +182,7 @@ Disassembly of section .text.init:
 4000021c:	00200293          	li	x5,2
 40000220:	fe5212e3          	bne	x4,x5,40000204 <test_12+0x8>
 40000224:	f00ff3b7          	lui	x7,0xf00ff
-40000228:	0ff38393          	addi	x7,x7,255 # f00ff0ff <begin_signature+0xb00fee6f>
+40000228:	0ff38393          	addi	x7,x7,255 # f00ff0ff <_erodata+0xb00fdfff>
 4000022c:	02771863          	bne	x14,x7,4000025c <fail>
 
 40000230 <test_13>:
@@ -202,7 +202,7 @@ Disassembly of section .text.init:
 
 4000025c <fail>:
 4000025c:	eeeef1b7          	lui	x3,0xeeeef
-40000260:	eee18193          	addi	x3,x3,-274 # eeeeeeee <begin_signature+0xaeeeec5e>
+40000260:	eee18193          	addi	x3,x3,-274 # eeeeeeee <_erodata+0xaeeeddee>
 
 40000264 <f>:
 40000264:	0000006f          	j	40000264 <f>

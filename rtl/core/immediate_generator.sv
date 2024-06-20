@@ -1,3 +1,5 @@
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+
 module immediate_generator (
     input           [6:0]   i_opcode,
     input           [4:0]   i_rd,
@@ -49,35 +51,35 @@ module immediate_generator (
         o_imm = '0;
 
         case (i_opcode)
-            OPCODE_I: begin
+            `OPCODE_I: begin
                 if ((i_funct3 == FUNCT3_SL) || (i_funct3 == FUNCT3_SR)) begin
                     o_imm = sht_amt_sext;
                 end else begin
                     o_imm = imm_i_sext;
                 end
             end
-            OPCODE_STORE: begin
+            `OPCODE_STORE: begin
                 o_imm = imm_s_sext;
             end
-            OPCODE_LOAD: begin
+            `OPCODE_LOAD: begin
                 o_imm  = imm_i_sext;
             end 
-            OPCODE_BRANCH: begin
+            `OPCODE_BRANCH: begin
                 o_imm = imm_b_sext;
             end
-            OPCODE_JALR: begin
+            `OPCODE_JALR: begin
                 o_imm = imm_i_sext;         // later, PC = rs1 + imm_i_sext
             end 
-            OPCODE_JAL: begin
+            `OPCODE_JAL: begin
                 o_imm = imm_j_sext;         // later, PC = PC + imm_i_sext
             end
-            OPCODE_AUIPC: begin
+            `OPCODE_AUIPC: begin
                 o_imm = imm_u_zfill;        // later, rd = PC + imm_u_zfill
             end
-            OPCODE_LUI: begin
+            `OPCODE_LUI: begin
                 o_imm = imm_u_zfill;
             end
-            OPCODE_PIM: begin
+            `OPCODE_PIM: begin
                 o_imm = imm_pim_sext;
             end
             default: 

@@ -1,113 +1,41 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1716817586" />
-    <testcase name="rvtest_add" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="19" time="0.027816057205200195" sim_time_ns="16.001" ratio_time="575.2432805972452">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sub" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="132" time="0.006519794464111328" sim_time_ns="16.001" ratio_time="2454.21847085497">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_xor" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="245" time="0.007249355316162109" sim_time_ns="16.000999999999998" ratio_time="2207.230753930145">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_or" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="356" time="0.016886234283447266" sim_time_ns="16.001000000000005" ratio_time="947.5765722192418">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_and" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="467" time="0.007113456726074219" sim_time_ns="16.00099999999999" ratio_time="2249.398656120122">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sll" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="578" time="0.009846210479736328" sim_time_ns="16.001000000000005" ratio_time="1625.0922152162336">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_srl" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="689" time="0.007332563400268555" sim_time_ns="16.001000000000005" ratio_time="2182.183654820355">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_slt" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="800" time="0.007096052169799805" sim_time_ns="16.001000000000005" ratio_time="2254.915778113766">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sltu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="911" time="0.0063686370849609375" sim_time_ns="16.000999999999976" ratio_time="2512.4684899670524">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_addi" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1022" time="0.007052898406982422" sim_time_ns="16.001000000000005" ratio_time="2268.712673382463">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_xori" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1133" time="0.006825923919677734" sim_time_ns="16.001000000000005" ratio_time="2344.1515300034935">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_ori" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1244" time="0.006587505340576172" sim_time_ns="16.001000000000005" ratio_time="2428.992338183135">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_andi" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1355" time="0.007309675216674805" sim_time_ns="16.001000000000005" ratio_time="2189.0165466584044">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_slli" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1466" time="0.00662994384765625" sim_time_ns="16.001000000000005" ratio_time="2413.4442715765254">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_srli" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1577" time="0.0065898895263671875" sim_time_ns="16.000999999999976" ratio_time="2428.113542112876">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_srai" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1688" time="0.006909370422363281" sim_time_ns="16.001000000000033" ratio_time="2315.8405211870304">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_slti" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1799" time="0.006200075149536133" sim_time_ns="16.000999999999976" ratio_time="2580.7751703133977">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sltiu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1910" time="0.007544994354248047" sim_time_ns="16.000999999999976" ratio_time="2120.743800290713">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lb" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2021" time="0.0068323612213134766" sim_time_ns="16.001000000000033" ratio_time="2341.942921589843">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lh" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2132" time="0.006895303726196289" sim_time_ns="16.000999999999976" ratio_time="2320.5649287369006">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lw" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2243" time="0.00711369514465332" sim_time_ns="16.001000000000033" ratio_time="2249.32326654825">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lbu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2354" time="0.006394863128662109" sim_time_ns="16.000999999999976" ratio_time="2502.1645777346916">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lhu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2465" time="0.0069692134857177734" sim_time_ns="16.001000000000033" ratio_time="2295.9549212822053">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sb" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2576" time="0.007134914398193359" sim_time_ns="16.000999999999976" ratio_time="2242.6337734411513">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sh" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2687" time="0.0065076351165771484" sim_time_ns="16.000999999999976" ratio_time="2458.804114453193">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_sw" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2798" time="0.006724119186401367" sim_time_ns="16.001000000000033" ratio_time="2379.642531078259">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_beq" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2909" time="0.006985187530517578" sim_time_ns="16.000999999999976" ratio_time="2290.704427059864">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_bne" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3020" time="0.0070307254791259766" sim_time_ns="16.001000000000033" ratio_time="2275.867554138836">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_blt" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3131" time="0.006818056106567383" sim_time_ns="16.000999999999976" ratio_time="2346.856603979435">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_bge" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3242" time="0.006627798080444336" sim_time_ns="16.000999999999976" ratio_time="2414.225630562247">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_bltu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3353" time="0.00702977180480957" sim_time_ns="16.001000000000033" ratio_time="2276.1763033406864">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_bgeu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3464" time="0.00738835334777832" sim_time_ns="16.001000000000033" ratio_time="2165.7058409112956">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_jal" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3575" time="0.006739616394042969" sim_time_ns="16.000999999999976" ratio_time="2374.1707338333063">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_jalr" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3686" time="0.006518363952636719" sim_time_ns="16.000999999999976" ratio_time="2454.757070373076">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_lui" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3797" time="0.007265567779541016" sim_time_ns="16.000999999999976" ratio_time="2202.3055163089816">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
-    <testcase name="rvtest_auipc" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3908" time="0.0068569183349609375" sim_time_ns="16.000999999999976" ratio_time="2333.5555738525695">
-      <failure message="Test failed with RANDOM_SEED=1716817586" />
-    </testcase>
+    <property name="random_seed" value="1718873462" />
+    <testcase name="rvtest_add" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="19" time="0.5447719097137451" sim_time_ns="13545.001" ratio_time="24863.61862364991" />
+    <testcase name="rvtest_sub" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="134" time="0.4802887439727783" sim_time_ns="13545.001" ratio_time="28201.787299782525" />
+    <testcase name="rvtest_xor" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="248" time="0.4905555248260498" sim_time_ns="13545.000999999997" ratio_time="27611.555297033974" />
+    <testcase name="rvtest_or" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="360" time="0.5080933570861816" sim_time_ns="13545.001000000004" ratio_time="26658.488663732976" />
+    <testcase name="rvtest_and" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="472" time="0.47937870025634766" sim_time_ns="13545.001000000004" ratio_time="28255.32505461093" />
+    <testcase name="rvtest_sll" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="584" time="0.4860854148864746" sim_time_ns="13865.00099999999" ratio_time="28523.79556222267" />
+    <testcase name="rvtest_srl" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="696" time="0.48723506927490234" sim_time_ns="14025.001000000004" ratio_time="28784.87589342009" />
+    <testcase name="rvtest_slt" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="808" time="0.46976304054260254" sim_time_ns="13545.001000000004" ratio_time="28833.68811721495" />
+    <testcase name="rvtest_sltu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="920" time="0.4704244136810303" sim_time_ns="13545.001000000004" ratio_time="28793.150623309586" />
+    <testcase name="rvtest_addi" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1032" time="0.41336679458618164" sim_time_ns="12105.001000000004" ratio_time="29283.92207244955" />
+    <testcase name="rvtest_xori" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1144" time="0.40445899963378906" sim_time_ns="11625.00099999999" ratio_time="28742.09996693277" />
+    <testcase name="rvtest_ori" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1256" time="0.4053349494934082" sim_time_ns="11625.00099999999" ratio_time="28679.986797410475" />
+    <testcase name="rvtest_andi" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1368" time="0.4053208827972412" sim_time_ns="11625.001000000018" ratio_time="28680.982138823918" />
+    <testcase name="rvtest_slli" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1480" time="0.42051005363464355" sim_time_ns="12105.00099999999" ratio_time="28786.472274256997" />
+    <testcase name="rvtest_srli" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1592" time="0.5102784633636475" sim_time_ns="12105.001000000018" ratio_time="23722.343522410134" />
+    <testcase name="rvtest_srai" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1704" time="0.429426908493042" sim_time_ns="12265.00099999999" ratio_time="28561.32384214279" />
+    <testcase name="rvtest_slti" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1816" time="0.4226500988006592" sim_time_ns="12105.00099999999" ratio_time="28640.714942099785" />
+    <testcase name="rvtest_sltiu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="1928" time="0.420271635055542" sim_time_ns="12105.001000000018" ratio_time="28802.802735902587" />
+    <testcase name="rvtest_lb" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2040" time="0.7152285575866699" sim_time_ns="20295.00099999999" ratio_time="28375.546228858017" />
+    <testcase name="rvtest_lh" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2152" time="0.7169933319091797" sim_time_ns="20295.00100000002" ratio_time="28305.703967928606" />
+    <testcase name="rvtest_lw" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2264" time="0.7438826560974121" sim_time_ns="20295.00099999999" ratio_time="27282.530159356666" />
+    <testcase name="rvtest_lbu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2376" time="0.7160170078277588" sim_time_ns="20295.00099999999" ratio_time="28344.30017461547" />
+    <testcase name="rvtest_lhu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2488" time="0.7127642631530762" sim_time_ns="20295.00099999999" ratio_time="28473.65117636566" />
+    <testcase name="rvtest_sb" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2600" time="0.718698263168335" sim_time_ns="20295.00099999999" ratio_time="28238.555789088437" />
+    <testcase name="rvtest_sh" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2712" time="0.7391641139984131" sim_time_ns="20335.001000000047" ratio_time="27510.806619115312" />
+    <testcase name="rvtest_sw" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2824" time="0.7242188453674316" sim_time_ns="20375.00099999999" ratio_time="28133.762508848766" />
+    <testcase name="rvtest_beq" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="2936" time="0.4285275936126709" sim_time_ns="12265.00099999999" ratio_time="28621.26309440376" />
+    <testcase name="rvtest_bne" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3048" time="0.42165160179138184" sim_time_ns="12265.00099999999" ratio_time="29087.998119519238" />
+    <testcase name="rvtest_blt" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3160" time="0.4251868724822998" sim_time_ns="12265.00099999999" ratio_time="28846.14223481364" />
+    <testcase name="rvtest_bge" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3272" time="0.4403564929962158" sim_time_ns="12425.001000000047" ratio_time="28215.777892723887" />
+    <testcase name="rvtest_bltu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3384" time="0.42755818367004395" sim_time_ns="12425.00099999999" ratio_time="29060.37464502992" />
+    <testcase name="rvtest_bgeu" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3496" time="0.4390585422515869" sim_time_ns="12585.00099999999" ratio_time="28663.605849601263" />
+    <testcase name="rvtest_jal" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3608" time="0.3696708679199219" sim_time_ns="10665.00099999999" ratio_time="28849.990425294327" />
+    <testcase name="rvtest_jalr" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3720" time="0.38300514221191406" sim_time_ns="11145.00099999999" ratio_time="29098.82863617935" />
+    <testcase name="rvtest_lui" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3832" time="0.3963491916656494" sim_time_ns="10665.00099999999" ratio_time="26908.09322754145" />
+    <testcase name="rvtest_auipc" classname="test_asm" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/asm_sim/test_asm.py" lineno="3944" time="0.37683677673339844" sim_time_ns="10655.001000000047" ratio_time="28274.843799383638" />
   </testsuite>
 </testsuites>

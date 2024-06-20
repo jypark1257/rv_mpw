@@ -4,7 +4,7 @@ blt.elf:     file format elf32-littleriscv
 
 Disassembly of section .riscv.attributes:
 
-00000000 <begin_signature-0x40000390>:
+00000000 <_ebss-0x40001000>:
    0:	1941                	.insn	2, 0x1941
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
@@ -273,7 +273,7 @@ Disassembly of section .text.init:
 
 40000340 <fail>:
 40000340:	eeeef1b7          	lui	x3,0xeeeef
-40000344:	eee18193          	addi	x3,x3,-274 # eeeeeeee <begin_signature+0xaeeeeb5e>
+40000344:	eee18193          	addi	x3,x3,-274 # eeeeeeee <_erodata+0xaeeeddee>
 
 40000348 <f>:
 40000348:	0000006f          	j	40000348 <f>

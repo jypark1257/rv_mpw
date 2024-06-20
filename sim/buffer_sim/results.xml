@@ -1,0 +1,8 @@
+<testsuites name="results">
+  <testsuite name="all" package="all">
+    <property name="random_seed" value="1718626076" />
+    <testcase name="test_buf" classname="test_buffer" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/buffer_sim/test_buffer.py" lineno="17" time="60468.766020059586" sim_time_ns="141775.0" ratio_time="2.3445988620467024">
+      <failure message="Test failed with RANDOM_SEED=1718626076" />
+    </testcase>
+  </testsuite>
+</testsuites>

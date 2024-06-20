@@ -16,4 +16,6 @@ void uwrite_int8s(const int8_t* s);
 
 int8_t uread_int8(void);
 
+int8_t *read_token(int8_t *b, uint32_t n, int8_t *ds);
+
 #endif

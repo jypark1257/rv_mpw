@@ -4,24 +4,29 @@
 int main() {
 
     int source;
-    int size;
-    size = 256;
-    source = 0x20000000;
+    int weight_size;
+    int act_size;
+    int result_size;
+    act_size = 72;
+    result_size = 256;
 
+    
+    weight_size = 4068;
+    source = 0x20000000;
     asm volatile ( 
         "pim_write %[a], 1(%[b])\n\t"
         :
-        : [a] "r" (source), [b] "r" (size)
+        : [a] "r" (source), [b] "r" (weight_size)
     );
     asm volatile ( 
         "pim_compute %[a], 1(%[b])\n\t"
         :
-        : [a] "r" (source), [b] "r" (size)
+        : [a] "r" (source), [b] "r" (act_size)
     );
     asm volatile ( 
         "pim_load %[a], 1(%[b])\n\t"
         :
-        : [a] "r" (source), [b] "r" (size)
+        : [a] "r" (source), [b] "r" (result_size)
     );
 
 }

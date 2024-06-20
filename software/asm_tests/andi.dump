@@ -4,7 +4,7 @@ andi.elf:     file format elf32-littleriscv
 
 Disassembly of section .riscv.attributes:
 
-00000000 <begin_signature-0x40000290>:
+00000000 <_ebss-0x40001000>:
    0:	1941                	.insn	2, 0x1941
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
@@ -58,10 +58,10 @@ Disassembly of section .text.init:
 40000080 <test_2>:
 40000080:	00200193          	li	x3,2
 40000084:	ff0100b7          	lui	x1,0xff010
-40000088:	f0008093          	addi	x1,x1,-256 # ff00ff00 <begin_signature+0xbf00fc70>
+40000088:	f0008093          	addi	x1,x1,-256 # ff00ff00 <_erodata+0xbf00ee00>
 4000008c:	f0f0f713          	andi	x14,x1,-241
 40000090:	ff0103b7          	lui	x7,0xff010
-40000094:	f0038393          	addi	x7,x7,-256 # ff00ff00 <begin_signature+0xbf00fc70>
+40000094:	f0038393          	addi	x7,x7,-256 # ff00ff00 <_erodata+0xbf00ee00>
 40000098:	1a771463          	bne	x14,x7,40000240 <fail>
 
 4000009c <test_3>:
@@ -83,7 +83,7 @@ Disassembly of section .text.init:
 400000cc <test_5>:
 400000cc:	00500193          	li	x3,5
 400000d0:	f00ff0b7          	lui	x1,0xf00ff
-400000d4:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+400000d4:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 400000d8:	0f00f713          	andi	x14,x1,240
 400000dc:	00000393          	li	x7,0
 400000e0:	16771063          	bne	x14,x7,40000240 <fail>
@@ -91,7 +91,7 @@ Disassembly of section .text.init:
 400000e4 <test_6>:
 400000e4:	00600193          	li	x3,6
 400000e8:	ff0100b7          	lui	x1,0xff010
-400000ec:	f0008093          	addi	x1,x1,-256 # ff00ff00 <begin_signature+0xbf00fc70>
+400000ec:	f0008093          	addi	x1,x1,-256 # ff00ff00 <_erodata+0xbf00ee00>
 400000f0:	0f00f093          	andi	x1,x1,240
 400000f4:	00000393          	li	x7,0
 400000f8:	14709463          	bne	x1,x7,40000240 <fail>
@@ -127,7 +127,7 @@ Disassembly of section .text.init:
 40000158:	00900193          	li	x3,9
 4000015c:	00000213          	li	x4,0
 40000160:	f00ff0b7          	lui	x1,0xf00ff
-40000164:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+40000164:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 40000168:	f0f0f713          	andi	x14,x1,-241
 4000016c:	00000013          	nop
 40000170:	00000013          	nop
@@ -136,7 +136,7 @@ Disassembly of section .text.init:
 4000017c:	00200293          	li	x5,2
 40000180:	fe5210e3          	bne	x4,x5,40000160 <test_9+0x8>
 40000184:	f00ff3b7          	lui	x7,0xf00ff
-40000188:	00f38393          	addi	x7,x7,15 # f00ff00f <begin_signature+0xb00fed7f>
+40000188:	00f38393          	addi	x7,x7,15 # f00ff00f <_erodata+0xb00fdf0f>
 4000018c:	0a731a63          	bne	x6,x7,40000240 <fail>
 
 40000190 <test_10>:
@@ -168,7 +168,7 @@ Disassembly of section .text.init:
 400001e4:	00c00193          	li	x3,12
 400001e8:	00000213          	li	x4,0
 400001ec:	f00ff0b7          	lui	x1,0xf00ff
-400001f0:	00f08093          	addi	x1,x1,15 # f00ff00f <begin_signature+0xb00fed7f>
+400001f0:	00f08093          	addi	x1,x1,15 # f00ff00f <_erodata+0xb00fdf0f>
 400001f4:	00000013          	nop
 400001f8:	00000013          	nop
 400001fc:	70f0f713          	andi	x14,x1,1807
@@ -195,7 +195,7 @@ Disassembly of section .text.init:
 
 40000240 <fail>:
 40000240:	eeeef1b7          	lui	x3,0xeeeef
-40000244:	eee18193          	addi	x3,x3,-274 # eeeeeeee <begin_signature+0xaeeeec5e>
+40000244:	eee18193          	addi	x3,x3,-274 # eeeeeeee <_erodata+0xaeeeddee>
 
 40000248 <f>:
 40000248:	0000006f          	j	40000248 <f>

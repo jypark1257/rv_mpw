@@ -93,6 +93,7 @@ module sram_28k (Q, CLK, CEN, WEN, A, D, EMA, GWEN, RETN);
   integer row_address;
   integer mux_address;
   reg [511:0] mem [0:447];
+  reg [511:0] mem_0;
   reg [511:0] row;
   reg LAST_CLK;
   reg [511:0] data_out;
@@ -120,6 +121,8 @@ module sram_28k (Q, CLK, CEN, WEN, A, D, EMA, GWEN, RETN);
   reg  GWEN_int;
   wire  RETN_;
   reg  RETN_int;
+
+  assign mem_0 = mem[0];
 
   assign Q[0] = Q_[0]; 
   assign Q[1] = Q_[1]; 
@@ -420,6 +423,7 @@ module sram_28k (Q, CLK, CEN, WEN, A, D, EMA, GWEN, RETN);
   integer row_address;
   integer mux_address;
   reg [511:0] mem [0:447];
+  reg [511:0] mem_0;
   reg [511:0] row;
   reg LAST_CLK;
   reg [511:0] data_out;
@@ -455,6 +459,8 @@ module sram_28k (Q, CLK, CEN, WEN, A, D, EMA, GWEN, RETN);
   reg  GWEN_int;
   wire  RETN_;
   reg  RETN_int;
+
+  assign mem_0 = mem[0];
 
   buf B0(Q[0], Q_[0]);
   buf B1(Q[1], Q_[1]);

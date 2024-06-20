@@ -19,7 +19,7 @@ from cocotb.types import LogicArray
 @cocotb.test()
 async def rvtest_add(dut):
 
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
 
     # Create a 10ns period clock on port clk
     clock = Clock(dut.i_clk, 10, units="ns")  
@@ -81,45 +81,47 @@ async def rvtest_add(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000008) >> 3)  << ( 3*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000010) >> 4)  << ( 4*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000020) >> 5)  << ( 5*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000040) >> 6)  << ( 6*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000080) >> 7)  << ( 7*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000100) >> 8)  << ( 8*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000200) >> 9)  << ( 9*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000400) >> 10) << (10*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00000800) >> 11) << (11*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00001000) >> 12) << (12*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00002000) >> 13) << (13*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00004000) >> 14) << (14*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00008000) >> 15) << (15*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00010000) >> 16) << (16*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00020000) >> 17) << (17*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00040000) >> 18) << (18*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00080000) >> 19) << (19*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00100000) >> 20) << (20*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00200000) >> 21) << (21*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00400000) >> 22) << (22*4  + mux_addr))
-                data = data | (((inst_decimal & 0x00800000) >> 23) << (23*4  + mux_addr))
-                data = data | (((inst_decimal & 0x01000000) >> 24) << (24*4  + mux_addr))
-                data = data | (((inst_decimal & 0x02000000) >> 25) << (25*4  + mux_addr))
-                data = data | (((inst_decimal & 0x04000000) >> 26) << (26*4  + mux_addr))
-                data = data | (((inst_decimal & 0x08000000) >> 27) << (27*4  + mux_addr))
-                data = data | (((inst_decimal & 0x10000000) >> 28) << (28*4  + mux_addr))
-                data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
-                data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
-                data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.imem_0.imem_sram.mem[row_addr].value = data
-                dut.dmem_0.dmem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
+                ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000008) >> 3)  << ( 3*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000010) >> 4)  << ( 4*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000020) >> 5)  << ( 5*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000040) >> 6)  << ( 6*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000080) >> 7)  << ( 7*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000100) >> 8)  << ( 8*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000200) >> 9)  << ( 9*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000400) >> 10) << (10*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00000800) >> 11) << (11*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00001000) >> 12) << (12*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00002000) >> 13) << (13*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00004000) >> 14) << (14*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00008000) >> 15) << (15*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00010000) >> 16) << (16*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00020000) >> 17) << (17*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00040000) >> 18) << (18*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00080000) >> 19) << (19*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00100000) >> 20) << (20*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00200000) >> 21) << (21*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00400000) >> 22) << (22*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x00800000) >> 23) << (23*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x01000000) >> 24) << (24*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x02000000) >> 25) << (25*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x04000000) >> 26) << (26*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x08000000) >> 27) << (27*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x10000000) >> 28) << (28*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
+                ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -133,7 +135,7 @@ async def rvtest_add(dut):
 async def rvtest_sub(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sub.hex"
 
@@ -161,7 +163,6 @@ async def rvtest_sub(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -194,6 +195,9 @@ async def rvtest_sub(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -226,13 +230,12 @@ async def rvtest_sub(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -246,7 +249,7 @@ async def rvtest_sub(dut):
 async def rvtest_xor(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/xor.hex"
 
@@ -274,7 +277,6 @@ async def rvtest_xor(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -307,6 +309,9 @@ async def rvtest_xor(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -339,13 +344,12 @@ async def rvtest_xor(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -357,7 +361,7 @@ async def rvtest_xor(dut):
 async def rvtest_or(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/or.hex"
 
@@ -385,7 +389,6 @@ async def rvtest_or(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -418,6 +421,9 @@ async def rvtest_or(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -450,13 +456,12 @@ async def rvtest_or(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -468,7 +473,7 @@ async def rvtest_or(dut):
 async def rvtest_and(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/and.hex"
 
@@ -496,7 +501,6 @@ async def rvtest_and(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -529,6 +533,9 @@ async def rvtest_and(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -561,13 +568,12 @@ async def rvtest_and(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -579,7 +585,7 @@ async def rvtest_and(dut):
 async def rvtest_sll(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sll.hex"
 
@@ -607,7 +613,6 @@ async def rvtest_sll(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -640,6 +645,9 @@ async def rvtest_sll(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -672,13 +680,12 @@ async def rvtest_sll(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -690,7 +697,7 @@ async def rvtest_sll(dut):
 async def rvtest_srl(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srl.hex"
 
@@ -718,7 +725,6 @@ async def rvtest_srl(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -751,6 +757,9 @@ async def rvtest_srl(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -783,13 +792,12 @@ async def rvtest_srl(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -801,7 +809,7 @@ async def rvtest_srl(dut):
 async def rvtest_slt(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slt.hex"
 
@@ -829,7 +837,6 @@ async def rvtest_slt(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -862,6 +869,9 @@ async def rvtest_slt(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -894,13 +904,12 @@ async def rvtest_slt(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -912,7 +921,7 @@ async def rvtest_slt(dut):
 async def rvtest_sltu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sltu.hex"
 
@@ -940,7 +949,6 @@ async def rvtest_sltu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -973,6 +981,9 @@ async def rvtest_sltu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1005,13 +1016,12 @@ async def rvtest_sltu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1023,7 +1033,7 @@ async def rvtest_sltu(dut):
 async def rvtest_addi(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/addi.hex"
 
@@ -1051,7 +1061,6 @@ async def rvtest_addi(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1084,6 +1093,9 @@ async def rvtest_addi(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1116,13 +1128,12 @@ async def rvtest_addi(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1134,7 +1145,7 @@ async def rvtest_addi(dut):
 async def rvtest_xori(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/xori.hex"
 
@@ -1162,7 +1173,6 @@ async def rvtest_xori(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1195,6 +1205,9 @@ async def rvtest_xori(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1227,13 +1240,12 @@ async def rvtest_xori(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1245,7 +1257,7 @@ async def rvtest_xori(dut):
 async def rvtest_ori(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/ori.hex"
 
@@ -1273,7 +1285,6 @@ async def rvtest_ori(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1306,6 +1317,9 @@ async def rvtest_ori(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1338,13 +1352,12 @@ async def rvtest_ori(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1356,7 +1369,7 @@ async def rvtest_ori(dut):
 async def rvtest_andi(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/andi.hex"
 
@@ -1384,7 +1397,6 @@ async def rvtest_andi(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1417,6 +1429,9 @@ async def rvtest_andi(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1449,13 +1464,12 @@ async def rvtest_andi(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1467,7 +1481,7 @@ async def rvtest_andi(dut):
 async def rvtest_slli(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slli.hex"
 
@@ -1495,7 +1509,6 @@ async def rvtest_slli(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1528,6 +1541,9 @@ async def rvtest_slli(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1560,13 +1576,12 @@ async def rvtest_slli(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1578,7 +1593,7 @@ async def rvtest_slli(dut):
 async def rvtest_srli(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srli.hex"
 
@@ -1606,7 +1621,6 @@ async def rvtest_srli(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1639,6 +1653,9 @@ async def rvtest_srli(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1671,13 +1688,12 @@ async def rvtest_srli(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1689,7 +1705,7 @@ async def rvtest_srli(dut):
 async def rvtest_srai(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srai.hex"
 
@@ -1717,7 +1733,6 @@ async def rvtest_srai(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1750,6 +1765,9 @@ async def rvtest_srai(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1782,13 +1800,12 @@ async def rvtest_srai(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1800,7 +1817,7 @@ async def rvtest_srai(dut):
 async def rvtest_slti(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slti.hex"
 
@@ -1828,7 +1845,6 @@ async def rvtest_slti(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1861,6 +1877,9 @@ async def rvtest_slti(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1893,13 +1912,12 @@ async def rvtest_slti(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -1911,7 +1929,7 @@ async def rvtest_slti(dut):
 async def rvtest_sltiu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sltiu.hex"
 
@@ -1939,7 +1957,6 @@ async def rvtest_sltiu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -1972,6 +1989,9 @@ async def rvtest_sltiu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2004,13 +2024,12 @@ async def rvtest_sltiu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2022,7 +2041,7 @@ async def rvtest_sltiu(dut):
 async def rvtest_lb(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lb.hex"
 
@@ -2050,7 +2069,6 @@ async def rvtest_lb(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2083,6 +2101,9 @@ async def rvtest_lb(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2115,13 +2136,12 @@ async def rvtest_lb(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2133,7 +2153,7 @@ async def rvtest_lb(dut):
 async def rvtest_lh(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lh.hex"
 
@@ -2161,7 +2181,6 @@ async def rvtest_lh(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2194,6 +2213,9 @@ async def rvtest_lh(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2226,13 +2248,12 @@ async def rvtest_lh(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2244,7 +2265,7 @@ async def rvtest_lh(dut):
 async def rvtest_lw(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lw.hex"
 
@@ -2272,7 +2293,6 @@ async def rvtest_lw(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2305,6 +2325,9 @@ async def rvtest_lw(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2337,13 +2360,12 @@ async def rvtest_lw(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2355,7 +2377,7 @@ async def rvtest_lw(dut):
 async def rvtest_lbu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lbu.hex"
 
@@ -2383,7 +2405,6 @@ async def rvtest_lbu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2416,6 +2437,9 @@ async def rvtest_lbu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2448,13 +2472,12 @@ async def rvtest_lbu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2466,7 +2489,7 @@ async def rvtest_lbu(dut):
 async def rvtest_lhu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lhu.hex"
 
@@ -2494,7 +2517,6 @@ async def rvtest_lhu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2527,6 +2549,9 @@ async def rvtest_lhu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2559,13 +2584,12 @@ async def rvtest_lhu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2577,7 +2601,7 @@ async def rvtest_lhu(dut):
 async def rvtest_sb(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sb.hex"
 
@@ -2605,7 +2629,6 @@ async def rvtest_sb(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2638,6 +2661,9 @@ async def rvtest_sb(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2670,13 +2696,12 @@ async def rvtest_sb(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2688,7 +2713,7 @@ async def rvtest_sb(dut):
 async def rvtest_sh(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sh.hex"
 
@@ -2716,7 +2741,6 @@ async def rvtest_sh(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2749,6 +2773,9 @@ async def rvtest_sh(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2781,13 +2808,12 @@ async def rvtest_sh(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2799,7 +2825,7 @@ async def rvtest_sh(dut):
 async def rvtest_sw(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sw.hex"
 
@@ -2827,7 +2853,6 @@ async def rvtest_sw(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2860,6 +2885,9 @@ async def rvtest_sw(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2892,13 +2920,12 @@ async def rvtest_sw(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -2910,7 +2937,7 @@ async def rvtest_sw(dut):
 async def rvtest_beq(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/beq.hex"
 
@@ -2938,7 +2965,6 @@ async def rvtest_beq(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -2971,6 +2997,9 @@ async def rvtest_beq(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3003,13 +3032,12 @@ async def rvtest_beq(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3021,7 +3049,7 @@ async def rvtest_beq(dut):
 async def rvtest_bne(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bne.hex"
 
@@ -3049,7 +3077,6 @@ async def rvtest_bne(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3082,6 +3109,9 @@ async def rvtest_bne(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3114,13 +3144,12 @@ async def rvtest_bne(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3132,7 +3161,7 @@ async def rvtest_bne(dut):
 async def rvtest_blt(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/blt.hex"
 
@@ -3160,7 +3189,6 @@ async def rvtest_blt(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3193,6 +3221,9 @@ async def rvtest_blt(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3225,13 +3256,12 @@ async def rvtest_blt(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3243,7 +3273,7 @@ async def rvtest_blt(dut):
 async def rvtest_bge(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bge.hex"
 
@@ -3271,7 +3301,6 @@ async def rvtest_bge(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3304,6 +3333,9 @@ async def rvtest_bge(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3336,13 +3368,12 @@ async def rvtest_bge(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3354,7 +3385,7 @@ async def rvtest_bge(dut):
 async def rvtest_bltu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bltu.hex"
 
@@ -3382,7 +3413,6 @@ async def rvtest_bltu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3415,6 +3445,9 @@ async def rvtest_bltu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3447,13 +3480,12 @@ async def rvtest_bltu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3465,7 +3497,7 @@ async def rvtest_bltu(dut):
 async def rvtest_bgeu(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bgeu.hex"
 
@@ -3493,7 +3525,6 @@ async def rvtest_bgeu(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3526,6 +3557,9 @@ async def rvtest_bgeu(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3558,13 +3592,12 @@ async def rvtest_bgeu(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3576,7 +3609,7 @@ async def rvtest_bgeu(dut):
 async def rvtest_jal(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/jal.hex"
 
@@ -3604,7 +3637,6 @@ async def rvtest_jal(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3637,6 +3669,9 @@ async def rvtest_jal(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3669,13 +3704,12 @@ async def rvtest_jal(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3687,7 +3721,7 @@ async def rvtest_jal(dut):
 async def rvtest_jalr(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/jalr.hex"
 
@@ -3715,7 +3749,6 @@ async def rvtest_jalr(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3748,6 +3781,9 @@ async def rvtest_jalr(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3780,13 +3816,12 @@ async def rvtest_jalr(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3798,7 +3833,7 @@ async def rvtest_jalr(dut):
 async def rvtest_lui(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lui.hex"
 
@@ -3826,7 +3861,6 @@ async def rvtest_lui(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3859,6 +3893,9 @@ async def rvtest_lui(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3891,13 +3928,12 @@ async def rvtest_lui(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         
@@ -3909,7 +3945,7 @@ async def rvtest_lui(dut):
 async def rvtest_auipc(dut):
 
     
-    dut.i_rst_n.value = 0
+    dut.i_rv_rst_n.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/auipc.hex"
 
@@ -3937,7 +3973,6 @@ async def rvtest_auipc(dut):
             row_addr = (idx & 0x000003fc) >> 2     # 8-bit
             if idx < 1024:
                 data =  dut.imem_0.imem_sram.mem[row_addr].value
-                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 data = data | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 data = data | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -3970,6 +4005,9 @@ async def rvtest_auipc(dut):
                 data = data | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 data = data | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 data = data | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
+                dut.imem_0.imem_sram.mem[row_addr].value = data
+            else:
+                ddata =  dut.dmem_0.dmem_sram.mem[row_addr].value
                 ddata = ddata | (((inst_decimal & 0x00000001) >> 0)  << ( 0*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000002) >> 1)  << ( 1*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x00000004) >> 2)  << ( 2*4  + mux_addr))
@@ -4002,13 +4040,12 @@ async def rvtest_auipc(dut):
                 ddata = ddata | (((inst_decimal & 0x20000000) >> 29) << (29*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
-                dut.imem_0.imem_sram.mem[row_addr].value = data
                 dut.dmem_0.dmem_sram.mem[row_addr].value = ddata
             await RisingEdge(dut.i_clk)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rst_n.value = 1
+    dut.i_rv_rst_n.value = 1
 
     for _ in range(1000):
         

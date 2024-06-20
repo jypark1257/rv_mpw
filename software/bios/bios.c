@@ -1,43 +1,7 @@
-
+#include "ascii.h"
 #include "uart.h"
 #include "string.h"
-#include "ascii.h"
-
-int8_t* read_n(int8_t*b, uint32_t n)
-{
-    for (uint32_t i = 0; i < n;  i++) {
-        b[i] =  uread_int8();
-    }
-    b[n] = '\0';
-    return b;
-}
-
-int8_t* read_token(int8_t* b, uint32_t n, int8_t* ds)
-{
-    for (uint32_t i = 0; i < n; i++) {
-        int8_t ch = uread_int8();
-        for (uint32_t j = 0; ds[j] != '\0'; j++) {
-            if (ch == ds[j]) {
-                b[i] = '\0';
-                return b;
-            }
-        }
-        b[i] = ch;
-    }
-    b[n - 1] = '\0';
-    return b;
-}
-
-void store(uint32_t address, uint32_t length)
-{
-    for (uint32_t i = 0; i*4 < length; i++) {
-        int8_t buffer[9];
-        int8_t* ascii_instruction = read_n(buffer,8);
-        volatile uint32_t* p = (volatile uint32_t*)(address+i*4);
-        *p = ascii_hex_to_uint32(ascii_instruction);
-    }
-}
-
+#include "pim.h"
 
 #define BUFFER_LEN 128
 
@@ -45,28 +9,54 @@ typedef void (*entry_t)(void);
 
 int main(void)
 {
-    uwrite_int8s("\r\n");
+    uwrite_int8s("\n\r");
 
     for ( ; ; ) {
-        uwrite_int8s("ids> ");
+        uwrite_int8s("RV_SPI_PJY> ");
 
         int8_t buffer[BUFFER_LEN];
-        int8_t* input = read_token(buffer, BUFFER_LEN, " \x0d");
+        int8_t sel_pim[BUFFER_LEN];
+        int8_t size[BUFFER_LEN];
+        int8_t *input = read_token(buffer, BUFFER_LEN, " \x0d");
 
-        if (strcmp(input, "file") == 0) {
-            uint32_t address = ascii_hex_to_uint32(read_token(buffer, BUFFER_LEN, " \x0d"));
-            uint32_t file_length = ascii_dec_to_uint32(read_token(buffer, BUFFER_LEN, " \x0d"));
-            store(address, file_length);
-        } else if (strcmp(input, "jal") == 0) {
-            uint32_t address = ascii_hex_to_uint32(read_token(buffer, BUFFER_LEN, " \x0d"));
-            entry_t start = (entry_t)(address);
-            start();
-        } else {
-            uwrite_int8s("\n\rUnrecognized token: ");
+        if (strcmp(input, "echo") == 0) {
+            int8_t *input_echo = read_token(buffer, BUFFER_LEN, " \x0d");
+            uwrite_int8s(input_echo);
+            uwrite_int8s("\n\r");
+        } 
+        else if (strcmp(input, "dump") == 0) {
+            /* Instruction parsing */
+            int8_t *str_source_addr = read_token(buffer, BUFFER_LEN, " \x0d");
+            int8_t *str_size = read_token(size, BUFFER_LEN, " \x0d");
+            uint32_t source_addr = ascii_hex_to_uint32(str_source_addr);
+            uint32_t size = ascii_dec_to_uint32(str_size);
+
+            dump_buffer(source_addr, size);
+        }
+        //else if (strcmp(input, "pim_write") == 0) {
+        //    /* Instruction parsing */
+        //    int8_t *str_source_addr = read_token(buffer, BUFFER_LEN, " \x0d");
+        //    int8_t *str_sel_pim = read_token(sel_pim, BUFFER_LEN, " \x0d");
+        //    int8_t *str_size = read_token(size, BUFFER_LEN, " \x0d");
+        //    uint32_t source_addr = ascii_dec_to_uint32(str_source_addr);
+        //    uint8_t sel_pim = ascii_dec_to_uint8(str_sel_pim);
+        //    uint32_t size = ascii_dec_to_uint32(str_size);
+        //    //pim_write(source_addr, sel_pim, size);
+//
+        //    /* print parameter */
+        //    uwrite_int8s("pim_write "); uwrite_int8s(uint32_to_ascii_hex(source_addr, str_source_addr, BUFFER_LEN)); 
+        //    uwrite_int8s(", "); uwrite_int8s(uint8_to_ascii_hex(sel_pim, str_sel_pim, BUFFER_LEN)); 
+        //    uwrite_int8s("("); uwrite_int8s(uint32_to_ascii_hex(size, str_size, BUFFER_LEN)); uwrite_int8s(")");
+        //    uwrite_int8s("\n\r");
+        //} 
+        else {
+            uwrite_int8s("Unrecognized token: ");
             uwrite_int8s(input);
             uwrite_int8s("\n\r");
         }
     }
+
+    while (1);
 
     return 0;
 }

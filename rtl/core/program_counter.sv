@@ -4,14 +4,14 @@ module program_counter #(
     parameter RESET_PC = 32'h4000_0000
 ) (
     input                       i_clk,
-    input                       i_reset_n,
+    input                       i_rst_n,
     input                       i_pc_write,
     input           [XLEN-1:0]  i_pc_next,
     output  logic   [XLEN-1:0]  o_pc_curr
 );
 
-    always_ff @(posedge i_clk or negedge i_reset_n) begin
-        if (~i_reset_n) begin
+    always_ff @(posedge i_clk or negedge i_rst_n) begin
+        if (i_rst_n == '0) begin
             o_pc_curr <= RESET_PC;
         end else begin
             if (i_pc_write) begin

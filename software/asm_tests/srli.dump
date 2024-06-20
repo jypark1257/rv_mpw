@@ -4,7 +4,7 @@ srli.elf:     file format elf32-littleriscv
 
 Disassembly of section .riscv.attributes:
 
-00000000 <begin_signature-0x40000350>:
+00000000 <_ebss-0x40001000>:
    0:	1941                	.insn	2, 0x1941
    2:	0000                	.insn	2, 0x
    4:	7200                	.insn	2, 0x7200
@@ -86,7 +86,7 @@ Disassembly of section .text.init:
 400000d0 <test_6>:
 400000d0:	00600193          	li	x3,6
 400000d4:	800000b7          	lui	x1,0x80000
-400000d8:	00108093          	addi	x1,x1,1 # 80000001 <begin_signature+0x3ffffcb1>
+400000d8:	00108093          	addi	x1,x1,1 # 80000001 <_erodata+0x3fffef01>
 400000dc:	01f0d713          	srli	x14,x1,0x1f
 400000e0:	00100393          	li	x7,1
 400000e4:	22771e63          	bne	x14,x7,40000320 <fail>
@@ -103,7 +103,7 @@ Disassembly of section .text.init:
 40000100:	fff00093          	li	x1,-1
 40000104:	0010d713          	srli	x14,x1,0x1
 40000108:	800003b7          	lui	x7,0x80000
-4000010c:	fff38393          	addi	x7,x7,-1 # 7fffffff <begin_signature+0x3ffffcaf>
+4000010c:	fff38393          	addi	x7,x7,-1 # 7fffffff <_erodata+0x3fffeeff>
 40000110:	20771863          	bne	x14,x7,40000320 <fail>
 
 40000114 <test_9>:
@@ -209,7 +209,7 @@ Disassembly of section .text.init:
 40000248:	01400193          	li	x3,20
 4000024c:	00000213          	li	x4,0
 40000250:	800000b7          	lui	x1,0x80000
-40000254:	00108093          	addi	x1,x1,1 # 80000001 <begin_signature+0x3ffffcb1>
+40000254:	00108093          	addi	x1,x1,1 # 80000001 <_erodata+0x3fffef01>
 40000258:	01f0d713          	srli	x14,x1,0x1f
 4000025c:	00000013          	nop
 40000260:	00000013          	nop
@@ -247,7 +247,7 @@ Disassembly of section .text.init:
 400002c8:	01700193          	li	x3,23
 400002cc:	00000213          	li	x4,0
 400002d0:	800000b7          	lui	x1,0x80000
-400002d4:	00108093          	addi	x1,x1,1 # 80000001 <begin_signature+0x3ffffcb1>
+400002d4:	00108093          	addi	x1,x1,1 # 80000001 <_erodata+0x3fffef01>
 400002d8:	00000013          	nop
 400002dc:	00000013          	nop
 400002e0:	01f0d713          	srli	x14,x1,0x1f
@@ -273,7 +273,7 @@ Disassembly of section .text.init:
 
 40000320 <fail>:
 40000320:	eeeef1b7          	lui	x3,0xeeeef
-40000324:	eee18193          	addi	x3,x3,-274 # eeeeeeee <begin_signature+0xaeeeeb9e>
+40000324:	eee18193          	addi	x3,x3,-274 # eeeeeeee <_erodata+0xaeeeddee>
 
 40000328 <f>:
 40000328:	0000006f          	j	40000328 <f>
