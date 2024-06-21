@@ -12,6 +12,18 @@ module dmem #(
 	input					i_data_read
 );
 
+	/* FPGA BRAM INSTANCE */
+	//ram_block_dmem  dmem_sram(	
+	//	.i_clk(i_clk),
+	//	.i_addr({i_data_addr[MEM_ADDR_WIDTH-1:2], 2'b00}),
+	//	.i_write(i_data_write),
+	//	.i_read(i_data_read),
+	//	.i_size(i_data_size),
+	//	.i_din(i_data_wr_data),
+	//	.o_dout(o_data_rd_data)
+	//);	
+
+
 	sram_4k dmem_sram (
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
