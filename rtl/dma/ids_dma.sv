@@ -170,7 +170,7 @@ module ids_dma #(
                             next_state = RW_SETUP;
                         end
                     end else begin
-                    
+                        next_state = RW_SETUP;
                     end
                 end else begin
                     next_state = RW_SETUP;

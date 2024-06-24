@@ -8,6 +8,7 @@ module core_top #(
     input                       i_clk,
     // CORE RESET
     input                       i_rv_rst_n,
+    
     // SPI RESET
     input                       i_spi_rst_n,
 
@@ -19,8 +20,17 @@ module core_top #(
 
     // UART
     input                       i_serial_rx,
-    output logic                o_serial_tx
+    output logic                o_serial_tx,
+
+    // PIM I/F
+    output logic    [XLEN-1:0]  o_pim_addr,
+    output logic    [XLEN-1:0]  o_pim_wr_data,
+    input           [XLEN-1:0]  i_pim_rd_data
 );
+
+    logic                       rv_rst_n;
+    logic                       bus_rst_n;
+
 
     // SPI I/F
     logic                       req_spi;
@@ -104,12 +114,23 @@ module core_top #(
     logic [XLEN-1:0]            dma_wr_data;
     logic                       dma_busy;
     
+    // RISC-V RST_n
+    always_comb begin
+        if (i_spi_rst_n == 1'b1) begin
+            rv_rst_n = 1'b0;
+        end else begin
+            rv_rst_n = i_rv_rst_n;
+        end
+    end
+    // BUS RST_n
+    assign bus_rst_n = i_rv_rst_n || i_spi_rst_n;
+
 
     core #(
         .RESET_PC               (RESET_PC)
     ) core_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (i_rv_rst_n),
+        .i_rst_n                (rv_rst_n),
 
         // instruction interface
         .o_instr_addr           (instr_addr),
@@ -171,7 +192,7 @@ module core_top #(
     // IDS BUS
     ids_bus bus_0 (
         .i_clk                  (i_clk), 
-        .i_rst_n                (i_rv_rst_n && (i_spi_rst_n == 1'b0)),
+        .i_rst_n                (bus_rst_n),
 
     // MASTERS
     // RV IMEM
@@ -328,7 +349,7 @@ module core_top #(
         .UART_TRANS             (32'h8000_0008)
     ) on_chip_uart (
         .i_clk                  (i_clk), 
-        .i_rst_n                (i_rv_rst_n), 
+        .i_rst_n                (rv_rst_n), 
         .i_uart_addr            (uart_addr),
         .i_uart_write           (uart_write),
         .i_uart_read            (uart_read),
@@ -339,46 +360,50 @@ module core_top #(
         .o_serial_tx            (o_serial_tx)
     );
 
+    assign o_pim_addr = pim_addr;
+    assign o_pim_wr_data = pim_wr_data;
+    assign pim_rd_data = i_pim_rd_data;
+
     // PIM WRAPPER
-    PIM_TOP pim_0 (
-        .i_clk                  (i_clk),
-        .i_rst                  (!i_rv_rst_n),
-
-        // bus interface
-        .i_address              (pim_addr),
-        .i_data                 (pim_wr_data),
-        .o_data                 (pim_rd_data),
-
-        // pim interface
-        .o_weight_out_en0       (),
-        .o_weight_out_en1       (),
-        .o_weight_out_en2       (),
-        .o_weight_out_en3       (),
-        .o_WL_address0          (),
-        .o_WL_address1          (),
-        .o_WL_address2          (),
-        .o_WL_address3          (),
-        .o_cam_data0            (),
-        .o_cam_data1            (),
-        .o_cam_data2            (),
-        .o_cam_data3            (),
-        .o_cim_data0            (),
-        .o_cim_data1            (),
-        .o_cim_data2            (),
-        .o_cim_data3            (),
-        .o_activation_out_en0   (),
-        .o_activation_out_en1   (),
-        .o_activation_out_en2   (),
-        .o_activation_out_en3   (),
-        .o_activation_out_data0 (),
-        .o_activation_out_data1 (),
-        .o_activation_out_data2 (),
-        .o_activation_out_data3 (),
-        .i_result_in0           (),
-        .i_result_in1           (),
-        .i_result_in2           (),
-        .i_result_in3           ()
-    );
+    //PIM_TOP pim_0 (
+    //    .i_clk                  (i_clk),
+    //    .i_rst                  (!rv_rst_n),
+//
+    //    // bus interface
+    //    .i_address              (pim_addr),
+    //    .i_data                 (pim_wr_data),
+    //    .o_data                 (pim_rd_data),
+//
+    //    // pim interface
+    //    .o_weight_out_en0       (),
+    //    .o_weight_out_en1       (),
+    //    .o_weight_out_en2       (),
+    //    .o_weight_out_en3       (),
+    //    .o_WL_address0          (),
+    //    .o_WL_address1          (),
+    //    .o_WL_address2          (),
+    //    .o_WL_address3          (),
+    //    .o_cam_data0            (),
+    //    .o_cam_data1            (),
+    //    .o_cam_data2            (),
+    //    .o_cam_data3            (),
+    //    .o_cim_data0            (),
+    //    .o_cim_data1            (),
+    //    .o_cim_data2            (),
+    //    .o_cim_data3            (),
+    //    .o_activation_out_en0   (),
+    //    .o_activation_out_en1   (),
+    //    .o_activation_out_en2   (),
+    //    .o_activation_out_en3   (),
+    //    .o_activation_out_data0 (),
+    //    .o_activation_out_data1 (),
+    //    .o_activation_out_data2 (),
+    //    .o_activation_out_data3 (),
+    //    .i_result_in0           (),
+    //    .i_result_in1           (),
+    //    .i_result_in2           (),
+    //    .i_result_in3           ()
+    //);
 
 
 endmodule
