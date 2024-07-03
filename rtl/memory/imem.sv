@@ -23,7 +23,7 @@ module imem #(
 	//);
 
 
-	sram_4k imem_sram (
+	sram_1024w_32b imem_sram (
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
         .GWEN           (i_instr_read),

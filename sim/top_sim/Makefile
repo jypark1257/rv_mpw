@@ -54,8 +54,8 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/ids_arbiter.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/imem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/dmem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/pim_buffer.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_4k.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_28k.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_1024w_32b.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_7168w_32b.v
 
 TOPLEVEL = core_top
 MODULE = test_top

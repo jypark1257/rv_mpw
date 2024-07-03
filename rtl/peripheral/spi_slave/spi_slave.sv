@@ -1,4 +1,3 @@
-`timescale 1ns / 1ps
 
 module spi_slave(
     input                   i_rst_n,

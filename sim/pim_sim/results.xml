@@ -1,6 +1,8 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1718874970" />
-    <testcase name="core_bench" classname="test_pim" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/pim_sim/test_pim.py" lineno="17" time="3.5570068359375" sim_time_ns="100645.001" ratio_time="28294.857345550638" />
+    <property name="random_seed" value="1719213553" />
+    <testcase name="core_bench" classname="test_pim" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/pim_sim/test_pim.py" lineno="17" time="0.0006568431854248047" sim_time_ns="0.001" ratio_time="1.522433393829401">
+      <failure message="Test failed with RANDOM_SEED=1719213553" />
+    </testcase>
   </testsuite>
 </testsuites>

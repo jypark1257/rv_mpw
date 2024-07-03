@@ -58,6 +58,6 @@ module alu #(
         endcase
     end
 
-    assign o_alu_zero = (o_alu_result == '0) ? 1 : 0;
+    assign o_alu_zero = (o_alu_result == 32'b0) ? 1 : 0;
 
 endmodule

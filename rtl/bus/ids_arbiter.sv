@@ -1,10 +1,3 @@
-/*
-  Author: Jiyong Park.
-  Affiliation: IDS Lab, Korea University EE.
-  Description: priority arbiter for the BUS.
-  priority: 1. RISC-V core (IMEM) && (DMEM)
-            2. DMA
-*/
 
 module ids_arbiter (
     input           i_clk,
@@ -79,9 +72,10 @@ module ids_arbiter (
                     next_state = IDLE;
                 end
             end 
-            default: begin
-                next_state = IDLE;
-            end
+	    // DEFAULT branch of CASE statement cannot be reached
+            //default: begin
+            //    next_state = IDLE;
+            //end
         endcase
     end
 

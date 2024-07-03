@@ -16,8 +16,8 @@ module uart_transmitter #(
     localparam  SYMBOL_EDGE_TIME    =   CLOCK_FREQ / BAUD_RATE;
     localparam  CLOCK_COUNTER_WIDTH =   $clog2(SYMBOL_EDGE_TIME);
     
-    integer sumbol_edge_time = SYMBOL_EDGE_TIME;
-    integer clock_counter_width = CLOCK_COUNTER_WIDTH;
+    //integer sumbol_edge_time = SYMBOL_EDGE_TIME;
+    //integer clock_counter_width = CLOCK_COUNTER_WIDTH;
 
     wire symbol_edge, start;
     // Remove these assignments when implementing this module

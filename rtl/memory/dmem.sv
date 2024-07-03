@@ -24,7 +24,7 @@ module dmem #(
 	//);	
 
 
-	sram_4k dmem_sram (
+	sram_1024w_32b dmem_sram (
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
         .GWEN           (i_data_read),

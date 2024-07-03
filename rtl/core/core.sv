@@ -1,4 +1,5 @@
 `include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/pipe_reg.svh"
 
 module core #(
     parameter XLEN = 32,

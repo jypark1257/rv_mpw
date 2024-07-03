@@ -1,7 +1,7 @@
 
 module core_top #(
     parameter XLEN              = 32,
-    parameter CPU_CLOCK_FREQ    = 100_000_000,
+    parameter CPU_CLOCK_FREQ    = 250_000_000,
     parameter RESET_PC          = 32'h4000_0000,
     parameter BAUD_RATE         = 115200
 ) (
@@ -51,6 +51,8 @@ module core_top #(
     logic                       instr_write;
 
     // RV DMEM I/F
+    logic                       req_data;
+    logic                       gnt_data;
     logic [XLEN-1:0]            data_addr;
     logic [XLEN-1:0]            data_rd_data;
     logic [XLEN-1:0]            data_wr_data;
@@ -114,15 +116,9 @@ module core_top #(
     logic [XLEN-1:0]            dma_wr_data;
     logic                       dma_busy;
     
-    // RISC-V RST_n
-    always_comb begin
-        if (i_spi_rst_n == 1'b1) begin
-            rv_rst_n = 1'b0;
-        end else begin
-            rv_rst_n = i_rv_rst_n;
-        end
-    end
-    // BUS RST_n
+    // RISC-V rst_n
+    //assign rv_rst_n = (i_spi_rst_n == 1'b1) ? 1'b0 : i_rv_rst_n;
+    // BUS rst_n
     assign bus_rst_n = i_rv_rst_n || i_spi_rst_n;
 
 
@@ -130,7 +126,7 @@ module core_top #(
         .RESET_PC               (RESET_PC)
     ) core_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (rv_rst_n),
+        .i_rst_n                (i_rv_rst_n),
 
         // instruction interface
         .o_instr_addr           (instr_addr),
@@ -141,8 +137,8 @@ module core_top #(
         .o_instr_write          (instr_write),
 
         // data interface
-        .o_req_dmem             (req_dmem),
-        .i_gnt_dmem             (gnt_dmem),
+        .o_req_dmem             (req_data),
+        .i_gnt_dmem             (gnt_data),
         .o_data_addr            (data_addr),
         .i_data_rd_data         (data_rd_data),
         .o_data_wr_data         (data_wr_data),
@@ -214,8 +210,8 @@ module core_top #(
         .o_spi_dout             (spi_rd_data),
 
     // RV DMEM
-        .i_req_dmem             (req_dmem),
-        .o_gnt_dmem             (gnt_dmem),
+        .i_req_dmem             (req_data),
+        .o_gnt_dmem             (gnt_data),
         .i_dmem_addr            (data_addr),
         .i_dmem_write           (data_write),
         .i_dmem_read            (data_read),
@@ -296,49 +292,46 @@ module core_top #(
     );
 
     // IMEM
-    imem #(
-        .MEM_DEPTH              (4096),
-        .MEM_ADDR_WIDTH         (12)
-    ) imem_0 (
-        .i_clk                  (i_clk),
-
-        .i_instr_addr           (imem_addr),
-        .o_instr_rd_data        (imem_rd_data),
-        .i_instr_wr_data        (imem_wr_data),
-        .i_instr_size           (imem_size),
-        .i_instr_write          (imem_write),
-        .i_instr_read           (imem_read)
-    );
+    sram_1024w_32b M0_0 (
+		.CLK 			(i_clk),
+		.CEN			(1'b0),
+        .GWEN           (imem_read),
+		.WEN			(~({4{imem_write}} & imem_size)),
+		.A 				(imem_addr[11:2]),     // 10-bit address
+		.D 				(imem_wr_data),
+		.EMA			(3'b000),
+		.RETN			(1'b1),
+		// outputs
+		.Q 				(imem_rd_data)
+	);
 
     // DMEM
-    dmem #(
-        .MEM_DEPTH              (4096),
-        .MEM_ADDR_WIDTH         (12)
-    ) dmem_0 (
-        .i_clk                  (i_clk),
-
-        .i_data_addr            (dmem_addr),
-        .o_data_rd_data         (dmem_rd_data),
-        .i_data_wr_data         (dmem_wr_data),
-        .i_data_size            (dmem_size),
-        .i_data_write           (dmem_write),
-        .i_data_read            (dmem_read)
-    );
+    sram_1024w_32b M0_1 (
+		.CLK 			(i_clk),
+		.CEN			(1'b0),
+        .GWEN           (dmem_read),
+		.WEN			(~({4{dmem_write}} & dmem_size)),
+		.A 				(dmem_addr[11:2]),
+		.D 				(dmem_wr_data),
+		.EMA			(3'b000),
+		.RETN			(1'b1),
+		// outputs
+		.Q 				(dmem_rd_data)
+	);
 
     // weight and activation buffer
-    pim_buffer #(
-        .MEM_DEPTH              (28672),
-        .MEM_ADDR_WIDTH         (15)
-    ) buf_0 (
-        .i_clk                  (i_clk),
-
-        .i_buf_addr             (buf_addr),
-        .o_buf_rd_data          (buf_rd_data),
-        .i_buf_wr_data          (buf_wr_data),
-        .i_buf_size             (buf_size),
-        .i_buf_write            (buf_write),
-        .i_buf_read             (buf_read)
-    );
+    sram_7168w_32b M1_0 (
+		.CLK 			(i_clk),
+		.CEN			(1'b0),
+        .GWEN           (buf_read),
+		.WEN			(~({4{buf_write}} & buf_size)),
+		.A 				(buf_addr[14:2]),     // 10-bit address
+		.D 				(buf_wr_data),
+		.EMA			(3'b000),
+		.RETN			(1'b1),
+		// outputs
+		.Q 				(buf_rd_data)
+	);
 
     // on-chip uart
     uart_wrap #(
@@ -349,7 +342,7 @@ module core_top #(
         .UART_TRANS             (32'h8000_0008)
     ) on_chip_uart (
         .i_clk                  (i_clk), 
-        .i_rst_n                (rv_rst_n), 
+        .i_rst_n                (i_rv_rst_n), 
         .i_uart_addr            (uart_addr),
         .i_uart_write           (uart_write),
         .i_uart_read            (uart_read),

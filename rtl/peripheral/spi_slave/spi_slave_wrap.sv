@@ -1,6 +1,6 @@
 /*
     CS must released and reactivated between blocks (1 byte),
-    Use "xfer" function in spidev
+    Use "write_byte" function in spidev
 */
 
 module spi_slave_wrap (

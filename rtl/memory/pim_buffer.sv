@@ -25,7 +25,7 @@ module pim_buffer #(
 	//	.o_dout(o_buf_rd_data)
 	//);	
 
-	sram_28k buf_sram (
+	sram_7168w_32b buf_sram (
 		.CLK 			(i_clk),
 		.CEN			(1'b0),
         .GWEN           (i_buf_read),
