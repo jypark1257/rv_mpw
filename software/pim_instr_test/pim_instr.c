@@ -11,7 +11,7 @@ int main() {
     result_size = 256;
 
     
-    weight_size = 4068;
+    weight_size = 2304;
     source = 0x20000000;
     asm volatile ( 
         "pim_write %[a], 1(%[b])\n\t"
@@ -28,5 +28,7 @@ int main() {
         :
         : [a] "r" (source), [b] "r" (result_size)
     );
+
+    while (1);
 
 }

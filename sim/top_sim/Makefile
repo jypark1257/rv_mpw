@@ -21,7 +21,6 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/core/branch_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/forwarding_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu_control_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/core/stall_generator.sv
 
 # DMA
 VERILOG_SOURCES += $(shell pwd)/../../rtl/dma/ids_dma.sv

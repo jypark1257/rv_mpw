@@ -53,7 +53,7 @@ Disassembly of section .text:
 400000a4:	10000793          	li	x15,256
 400000a8:	fef42423          	sw	x15,-24(x8)
 400000ac:	000017b7          	lui	x15,0x1
-400000b0:	fe478793          	addi	x15,x15,-28 # fe4 <_start-0x3ffff01c>
+400000b0:	90078793          	addi	x15,x15,-1792 # 900 <_start-0x3ffff700>
 400000b4:	fef42223          	sw	x15,-28(x8)
 400000b8:	200007b7          	lui	x15,0x20000
 400000bc:	fef42023          	sw	x15,-32(x8)
@@ -66,11 +66,7 @@ Disassembly of section .text:
 400000d8:	fe042783          	lw	x15,-32(x8)
 400000dc:	fe842703          	lw	x14,-24(x8)
 400000e0:	00f7408b          	pim_load	x15,1(x14)
-400000e4:	00000793          	li	x15,0
-400000e8:	00078513          	mv	x10,x15
-400000ec:	01c12403          	lw	x8,28(x2)
-400000f0:	02010113          	addi	x2,x2,32
-400000f4:	00008067          	ret
+400000e4:	0000006f          	j	400000e4 <main+0x54>
 
 Disassembly of section .comment:
 

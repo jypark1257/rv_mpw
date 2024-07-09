@@ -20,21 +20,26 @@ module ids_dma #(
     // bus request 
     output  logic           o_bus_req,
     input                   i_bus_gnt,
-    // bus interface
-    output  logic   [31:0]  o_dma_addr,
-    output  logic           o_dma_write,
-    output  logic           o_dma_read,
-    output  logic   [3:0]   o_dma_size,
-    output  logic   [31:0]  o_dma_wr_data,
-    input           [31:0]  i_dma_rd_data,
+    // bus interface (SRAM)
+    output  logic   [31:0]  o_dma_addr_0,
+    output  logic           o_dma_write_0,
+    output  logic           o_dma_read_0,
+    output  logic   [3:0]   o_dma_size_0,
+    output  logic   [31:0]  o_dma_wr_data_0,
+    input           [31:0]  i_dma_rd_data_0,
+    // bus interface (PIM)
+    output  logic   [31:0]  o_dma_addr_1,
+    output  logic           o_dma_write_1,
+    output  logic           o_dma_read_1,
+    output  logic   [3:0]   o_dma_size_1,
+    output  logic   [31:0]  o_dma_wr_data_1,
+    input           [31:0]  i_dma_rd_data_1,
     // DMA status
     output  logic           o_dma_busy
 );
 
-    localparam IDLE     = 3'b000;
-    localparam RW_SETUP = 3'b001;  
-    localparam R_EXE    = 3'b010;  
-    localparam W_EXE    = 3'b011;   
+    // FSM states
+    typedef enum { IDLE, RW_SETUP, R_EXE, RW_EXE, W_EXE } states;
 
     localparam FUNCT_WEIGHT = 2'b01;
     localparam FUNCT_ACT    = 2'b10;
@@ -68,32 +73,36 @@ module ids_dma #(
 
     // control signals
     logic mem_incr;
-    logic rw_edge;
+    logic cnt_decr;
     
     // PIM address
     logic [31:0] pim_write_addr;
+    logic [31:0] pim_read_addr;
     
     // --|PIM status|--------------------------------------------------------------------
     // transfer data when       (!pim_busy)
     // load data from pim when  (!pim_busy) && (pim_data_valid) 
-    assign pim_busy = i_dma_rd_data[0];
-    assign pim_data_valid = i_dma_rd_data[1];
+    assign pim_busy = i_dma_rd_data_1[0];
+    assign pim_data_valid = i_dma_rd_data_1[1];
 
     // --|PIM address select|-------------------------------------------------------------
     always_comb begin
         case (funct3)
             3'b001: pim_write_addr = PIM_W_WEIGHT | sel_pim;
             3'b010: pim_write_addr = PIM_W_ACTIVATION | sel_pim;
-            default: pim_write_addr = '0;
+            3'b100: pim_read_addr = PIM_R | sel_pim;
+            default: begin
+                pim_write_addr = '0;
+                pim_read_addr = '0;
+            end
         endcase
     end
-
 
     // --|operand fetch|------------------------------------------------------------------
     assign operation_start = i_dma_en && (!trans_running);
 
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (i_rst_n == 1'b0) begin
+        if (i_rst_n == '0) begin
             funct3 <= '0;
             sel_pim <= '0;
             size <= '0;
@@ -121,15 +130,15 @@ module ids_dma #(
 
     // --|counter|-----------------------------------------------------------
     assign trans_running = trans_counter != '0;
-    assign data_count = size;
+    assign data_count = size - 1;
     
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (i_rst_n == 1'b0) begin
+        if (i_rst_n == '0) begin
             trans_counter <= '0;
         end else begin
             if (count_start) begin
                 trans_counter <= data_count;
-            end else if (rw_edge && trans_running) begin    // while running
+            end else if (cnt_decr && trans_running) begin    // while running
                 trans_counter <= trans_counter - 1;
             end
         end
@@ -138,7 +147,7 @@ module ids_dma #(
     // --|FSM|------------------------------------------------------------
     // state transition
     always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (i_rst_n == 1'b0) begin
+        if (i_rst_n == '0) begin
             curr_state <= IDLE;
         end else begin
             curr_state <= next_state;        
@@ -180,18 +189,21 @@ module ids_dma #(
                 if (!i_bus_gnt) begin
                     next_state = R_EXE;
                 end else begin      // bus_gnt && trans_running
-                    next_state = W_EXE;
+                    next_state = RW_EXE;
                 end
             end
-            W_EXE: begin
-                if (!trans_running) begin   // go to IDLE when transfer is done
-                    next_state = IDLE;
+            RW_EXE: begin
+                if (!trans_running) begin   // go to W_EXE when transfer is done
+                    next_state = W_EXE;
                 end else if (!i_bus_gnt) begin
-                    next_state = W_EXE;
-                end else begin      // bus_gnt
-                    next_state = R_EXE;
+                    next_state = RW_EXE;
+                end else begin              // bus_gnt
+                    next_state = RW_EXE;
                 end
             end
+            //W_EXE: begin
+            //    next_state = IDLE;
+            //end
             default: begin
                 next_state = IDLE;
             end
@@ -203,59 +215,117 @@ module ids_dma #(
         o_dma_busy = '0;
         o_bus_req = '0;
         count_start = '0;
+        cnt_decr = '0;
         mem_incr = '0;
-        o_dma_addr = '0;
-        o_dma_write = '0;
-        o_dma_read = '0;
-        o_dma_size = '0;
-        o_dma_wr_data = '0;
-        rw_edge = '0;
+        // DMA SRAM I/F
+        o_dma_addr_0 = '0;
+        o_dma_write_0 = '0;
+        o_dma_read_0 = '0;
+        o_dma_size_0 = '0;
+        o_dma_wr_data_0 = '0;
+        // DMA PIM I/F
+        o_dma_addr_1 = '0;
+        o_dma_write_1 = '0;
+        o_dma_read_1 = '0;
+        o_dma_size_1 = '0;
+        o_dma_wr_data_1 = '0;
         case (curr_state)
             RW_SETUP: begin
                 o_dma_busy = 1'b1;
                 o_bus_req = 1'b1;
                 count_start = 1'b1;
                 // read PIM control signal
-                o_dma_addr = PIM_CTRL;
-                o_dma_write = 1'b0;
-                o_dma_read = 1'b1;
-                o_dma_size = 4'b1111;
-                o_dma_wr_data = '0;
+                o_dma_addr_1 = PIM_CTRL;
+                o_dma_write_1 = '0;
+                o_dma_read_1 = 1'b1;
+                o_dma_size_1 = 4'b1111;
+                o_dma_wr_data_1 = '0;
             end
             R_EXE: begin
                 o_dma_busy = 1'b1;
                 o_bus_req = 1'b1;
                 if (i_bus_gnt) begin
-                    o_dma_addr = ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) ? mem_addr : PIM_R;
-                    o_dma_write = 1'b0;
-                    o_dma_read = 1'b1;
-                    o_dma_size = 4'b1111;
-                    o_dma_wr_data = '0;
-                    rw_edge = 1'b1;
+                    cnt_decr = 1'b1;
+                    mem_incr = 1'b1;
+                    // DMA SRAM I/F
+                    //o_dma_addr_0 = ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) ? mem_addr : pim_read_addr;
+                    o_dma_addr_0 = mem_addr;
+                    o_dma_write_0 = (funct3 == PIM_LOAD) ? 1'b1 : 1'b0;
+                    o_dma_read_0 = (funct3 == PIM_LOAD) ? 1'b0 : 1'b1;
+                    o_dma_size_0 = 4'b1111;
+                    o_dma_wr_data_0 = '0;
+
+                    o_dma_addr_1 = (funct3 == PIM_LOAD) ? pim_read_addr : '0;
+                    o_dma_write_1 = (funct3 == PIM_LOAD) ? 1'b0 : 1'b1;
+                    o_dma_read_1 = (funct3 == PIM_LOAD) ? 1'b1 : 1'b0;
+                    o_dma_size_1 = 4'b1111;
+                    o_dma_wr_data_1 = '0;
                 end else begin
-                    o_dma_addr = '0;
-                    o_dma_write = 1'b0;
-                    o_dma_read = 1'b0;
-                    o_dma_size = 4'b0000;
-                    o_dma_wr_data = '0;
+                    cnt_decr = '0;    
+                    mem_incr = '0;         
+                    o_dma_addr_0 = '0;
+                    o_dma_write_0 = '0;
+                    o_dma_read_0 = '0;
+                    o_dma_size_0 = '0;
+                    o_dma_wr_data_0 = '0;
+
+                    o_dma_addr_1 = '0;
+                    o_dma_write_1 = '0;
+                    o_dma_read_1 = '0;
+                    o_dma_size_1 = '0;
+                    o_dma_wr_data_1 = '0;
+                end
+            end
+            RW_EXE: begin
+                o_dma_busy = 1'b1;
+                o_bus_req = 1'b1;
+                if (i_bus_gnt) begin   
+                    cnt_decr = 1'b1;    
+                    mem_incr = 1'b1;             
+                    // DMA SRAM I/F
+                    //o_dma_addr_0 = ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) ? mem_addr : pim_read_addr;
+                    o_dma_addr_0 = mem_addr;
+                    o_dma_write_0 = (funct3 == PIM_LOAD) ? 1'b1 : 1'b0;
+                    o_dma_read_0 = (funct3 == PIM_LOAD) ? 1'b0 : 1'b1;
+                    o_dma_size_0 = 4'b1111;
+                    o_dma_wr_data_0 = (funct3 == PIM_LOAD) ? i_dma_rd_data_1 : '0;
+
+                    o_dma_addr_1 = (funct3 == PIM_LOAD) ? pim_read_addr : pim_write_addr;
+                    o_dma_write_1 = (funct3 == PIM_LOAD) ? 1'b0 : 1'b1;
+                    o_dma_read_1 = (funct3 == PIM_LOAD) ? 1'b1 : 1'b0;
+                    o_dma_size_1 = 4'b1111;
+                    o_dma_wr_data_1 = (funct3 == PIM_LOAD) ? '0 : i_dma_rd_data_0;
+                end else begin
+                    cnt_decr = '0;    
+                    mem_incr = '0;         
+                    o_dma_addr_0 = '0;
+                    o_dma_write_0 = '0;
+                    o_dma_read_0 = '0;
+                    o_dma_size_0 = '0;
+                    o_dma_wr_data_0 = '0;
+
+                    o_dma_addr_1 = '0;
+                    o_dma_write_1 = '0;
+                    o_dma_read_1 = '0;
+                    o_dma_size_1 = '0;
+                    o_dma_wr_data_1 = '0;
                 end
             end
             W_EXE: begin
                 o_dma_busy = 1'b1;
                 o_bus_req = 1'b1;
                 if (i_bus_gnt) begin
-                    mem_incr = 1'b1;
-                    o_dma_addr = (funct3 == PIM_LOAD) ? mem_addr : pim_write_addr;
-                    o_dma_write = 1'b1;
-                    o_dma_read = 1'b0;
-                    o_dma_size = 4'b1111;
-                    o_dma_wr_data = i_dma_rd_data;
+                    o_dma_addr_1 = (funct3 == PIM_LOAD) ? mem_addr : pim_write_addr;
+                    o_dma_write_1 = 1'b1;
+                    o_dma_read_1 = '0;
+                    o_dma_size_1 = 4'b1111;
+                    o_dma_wr_data_1 = i_dma_rd_data_0;
                 end else begin
-                    o_dma_addr = '0;
-                    o_dma_write = 1'b0;
-                    o_dma_read = 1'b0;
-                    o_dma_size = 4'b0000;
-                    o_dma_wr_data = '0;
+                    o_dma_addr_1 = '0;
+                    o_dma_write_1 = '0;
+                    o_dma_read_1 = '0;
+                    o_dma_size_1 = '0;
+                    o_dma_wr_data_1 = '0;
                 end
             end
             default: begin
@@ -263,15 +333,18 @@ module ids_dma #(
                 o_bus_req = '0;
                 count_start = '0;
                 mem_incr = '0;
-                o_dma_addr = '0;
-                o_dma_write = '0;
-                o_dma_read = '0;
-                o_dma_size = '0;
-                o_dma_wr_data = '0;
-                rw_edge = '0;
+                cnt_decr = '0;
+                o_dma_addr_0 = '0;
+                o_dma_write_0 = '0;
+                o_dma_read_0 = '0;
+                o_dma_size_0 = '0;
+                o_dma_wr_data_0 = '0;
+                o_dma_addr_1 = '0;
+                o_dma_write_1 = '0;
+                o_dma_read_1 = '0;
+                o_dma_size_1 = '0;
+                o_dma_wr_data_1 = '0;
             end
         endcase
     end
-
-
 endmodule

@@ -42,12 +42,18 @@ module ids_bus (
     // DMA
     input                   i_req_dma,
     output                  o_gnt_dma,
-    input           [31:0]  i_dma_addr,
-    input                   i_dma_write,
-    input                   i_dma_read,
-    input           [ 3:0]  i_dma_size,
-    input           [31:0]  i_dma_din,
-    output logic    [31:0]  o_dma_dout,
+    input           [31:0]  i_dma_addr_0,
+    input                   i_dma_write_0,
+    input                   i_dma_read_0,
+    input           [ 3:0]  i_dma_size_0,
+    input           [31:0]  i_dma_din_0,
+    output logic    [31:0]  o_dma_dout_0,
+    input           [31:0]  i_dma_addr_1,
+    input                   i_dma_write_1,
+    input                   i_dma_read_1,
+    input           [ 3:0]  i_dma_size_1,
+    input           [31:0]  i_dma_din_1,
+    output logic    [31:0]  o_dma_dout_1,
 
     // IMEM SRAM (IMEM port)
     output logic    [31:0]  o_imem_addr,
@@ -81,7 +87,7 @@ module ids_bus (
     output logic    [31:0]  o_uart_din,
     input           [31:0]  i_uart_dout,
 
-    // Hybrid-PIM
+    // Hybrid-PIM_0
     output logic    [31:0]  o_pim_addr,
     output logic            o_pim_write,
     output logic            o_pim_read,
@@ -92,7 +98,8 @@ module ids_bus (
 
     // latch dmem address
     logic [31:0] dmem_addr_q;
-    logic [31:0] dma_addr_q;
+    logic [31:0] dma_addr_0_q;
+    logic [31:0] dma_addr_1_q;
 
     // internal grant signal 
     logic gnt_imem;
@@ -100,10 +107,12 @@ module ids_bus (
     always_ff @(posedge i_clk or negedge i_rst_n) begin
         if (~i_rst_n) begin
             dmem_addr_q <= '0;
-            dma_addr_q <= '0;
+            dma_addr_0_q <= '0;
+            dma_addr_1_q <= '0;
         end else begin
             dmem_addr_q <= i_dmem_addr;
-            dma_addr_q <= i_dma_addr;
+            dma_addr_0_q <= i_dma_addr_0;
+            dma_addr_1_q <= i_dma_addr_1;
         end
     end
 
@@ -124,8 +133,6 @@ module ids_bus (
 
     assign gnt_imem = !(o_gnt_spi && (i_spi_addr[31:12] == 20'h40000));
 
-
-    // SLAVE IMEM PORT
     assign o_imem_addr  = (gnt_imem) ? i_imem_addr : i_spi_addr;
     assign o_imem_read  = (gnt_imem) ? i_imem_read : i_spi_read;
     assign o_imem_write = (gnt_imem) ? i_imem_write : i_spi_write;
@@ -213,30 +220,39 @@ module ids_bus (
                 endcase
             end
             3'b001: begin    // DMA GRANTED
-                case (i_dma_addr[31:28])
-                    4'h2: begin // DMA ACCESS PIM_BUFFER
-                        o_buf_addr = i_dma_addr;
-                        o_buf_write = i_dma_write;
-                        o_buf_read = i_dma_read;
-                        o_buf_size = i_dma_size;
-                        o_buf_din = i_dma_din;
-                    end
-                    4'h4: begin // DMA ACCESS DMEM
-                        o_pim_addr = i_dma_addr;
-                        o_pim_write = i_dma_write;
-                        o_pim_read = i_dma_read;
-                        o_pim_size = i_dma_size;
-                        o_pim_din = i_dma_din;
+                case (i_dma_addr_0[31:28])
+                    4'h2: begin
+                        o_buf_addr = i_dma_addr_0;
+                        o_buf_write = i_dma_write_0;
+                        o_buf_read = i_dma_read_0;
+                        o_buf_size = i_dma_size_0;
+                        o_buf_din = i_dma_din_0;
                     end
                     default: begin
-                        o_buf_addr = i_dma_addr;
-                        o_buf_write = i_dma_write;
-                        o_buf_read = i_dma_read;
-                        o_buf_size = i_dma_size;
-                        o_buf_din = i_dma_din;
+                        o_buf_addr = '0;
+                        o_buf_write = '0;
+                        o_buf_read = '0;
+                        o_buf_size = '0;
+                        o_buf_din = '0;
                     end
                 endcase
-            end 
+                case (i_dma_addr_1[31:28])
+                    4'h4: begin
+                        o_pim_addr = i_dma_addr_1;
+                        o_pim_write = i_dma_write_1;
+                        o_pim_read = i_dma_read_1;
+                        o_pim_size = i_dma_size_1;
+                        o_pim_din = i_dma_din_1;
+                    end
+                    default: begin
+                        o_pim_addr = '0;
+                        o_pim_write = '0;
+                        o_pim_read = '0;
+                        o_pim_size = '0;
+                        o_pim_din = '0;
+                    end
+                endcase
+            end
             default: begin
                 o_dmem_addr = i_dmem_addr;
                 o_dmem_write = i_dmem_write;
@@ -273,16 +289,22 @@ module ids_bus (
     
     // MASTER RV DMA PORT
     always @(*) begin
-        case (dma_addr_q[31:28])
-            4'h2: begin // BUFFER ACCESS
-                o_dma_dout = i_buf_dout;
-            end
-            4'h4: begin // PIM ACCESS
-                o_dma_dout = i_pim_dout;
-            end
+        case (dma_addr_0_q[31:28])
+            4'h2: begin
+                o_dma_dout_0 = i_buf_dout;
+            end 
             default: begin
-                o_dma_dout = i_buf_dout;
+                o_dma_dout_0 = '0;
+            end
+        endcase
+        case (dma_addr_1_q[31:28])
+            4'h4: begin
+                o_dma_dout_1 = i_pim_dout;
+            end 
+            default: begin
+                o_dma_dout_1 = '0;
             end
         endcase
     end
+
 endmodule

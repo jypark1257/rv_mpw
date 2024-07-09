@@ -21,7 +21,6 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/core/branch_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/forwarding_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu_control_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/core/stall_generator.sv
 
 # DMA
 VERILOG_SOURCES += $(shell pwd)/../../rtl/dma/ids_dma.sv
@@ -54,8 +53,8 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/ids_arbiter.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/imem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/dmem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/pim_buffer.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_4k.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_28k.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_1024w_32b.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_8192w_32b.v
 
 
 TOPLEVEL = core_top

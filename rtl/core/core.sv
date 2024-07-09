@@ -1,5 +1,5 @@
 `include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
-`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/pipe_reg.svh"
+//`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/pipe_reg.svh"
 
 module core #(
     parameter XLEN = 32,
@@ -77,9 +77,7 @@ module core #(
     logic [XLEN-1:0] rs2_dout;
 
     logic [XLEN-1:0] rd_din;
-
-    logic stall_from_gen;
-
+    
     logic stall;
     logic if_flush;    
     logic id_flush;
@@ -233,14 +231,6 @@ module core #(
 
     assign stall = (i_dma_busy || ex.dma_en);
 
-    // stall generator for DMA
-    //stall_generator stall_gen_0 (
-    //    .i_clk          (i_clk),
-    //    .i_rst_n        (i_rst_n),
-    //    .i_stall_gen    (ex.dma_en),
-    //    .i_stall_count  (forward_in1[12:0]),
-    //    .o_stall        (stall_from_gen)
-    //);
 
     // DMA interface
     assign o_dma_en = ex.dma_en;
