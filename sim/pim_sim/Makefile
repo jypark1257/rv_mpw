@@ -2,6 +2,10 @@
 # SPDX-License-Identifier: CC0-1.0
 
 TOPLEVEL_LANG ?= verilog
+# MPW TOP
+VERILOG_SOURCES += $(shell pwd)/../../rtl/mpw_top.sv
+
+
 # CORE HEADERS
 VERILOG_SOURCES += $(shell pwd)/../../rtl/headers/pipe_reg.svh
 VERILOG_SOURCES += $(shell pwd)/../../rtl/headers/opcode.svh
@@ -38,7 +42,8 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart/uart_transmitter.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart/uart_receiver.v
 
 # PIM WRAPPER 
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/activation_buffer2.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/pim.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/activation_buffer.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/dmux.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/pim_controller.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/result_buffer.v
@@ -57,7 +62,7 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_1024w_32b.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_8192w_32b.v
 
 
-TOPLEVEL = core_top
+TOPLEVEL = mpw_top
 MODULE = test_pim
 
 include $(shell cocotb-config --makefiles)/Makefile.sim

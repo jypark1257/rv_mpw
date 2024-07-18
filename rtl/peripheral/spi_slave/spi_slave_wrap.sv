@@ -236,7 +236,7 @@ module spi_slave_wrap (
         .i_mosi     (mosi),
         .o_miso     (miso),
         // we only receive data from external spi master
-        .i_data     (32'h0),
+        .i_data     ('0),
         .o_data     (recv_data)
     );
 

@@ -75,15 +75,6 @@ module uart_wrap #(
         end
     end
 
-    always_ff @(posedge i_clk or negedge i_rst_n) begin
-        if (i_rst_n == '0) begin
-            uart_addr <= '0;
-        end else begin
-            uart_addr <= i_uart_addr;
-        end
-    end
-
-
     //UART
     uart #(
         .CLOCK_FREQ(CLOCK_FREQ),

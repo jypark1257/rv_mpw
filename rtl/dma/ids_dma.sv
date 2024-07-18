@@ -39,7 +39,7 @@ module ids_dma #(
 );
 
     // FSM states
-    typedef enum { IDLE, RW_SETUP, R_EXE, RW_EXE, W_EXE } states;
+    typedef enum bit [2:0] { IDLE, RW_SETUP, R_EXE, RW_EXE, W_EXE } e_state;
 
     localparam FUNCT_WEIGHT = 2'b01;
     localparam FUNCT_ACT    = 2'b10;
@@ -62,8 +62,8 @@ module ids_dma #(
     logic [31:0] mem_addr;
 
     // current state, next state
-    logic [2:0] curr_state;
-    logic [2:0] next_state;
+    e_state curr_state;
+    e_state next_state;
 
     // counter
     logic [13:0] trans_counter;     // maximum available transfer count: 8192 (32K * byte)
