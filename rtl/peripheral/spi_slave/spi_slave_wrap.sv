@@ -152,7 +152,6 @@ module spi_slave_wrap (
         endcase
     end
 
-
     // output logic 
     always_comb begin
         count_start = '0;

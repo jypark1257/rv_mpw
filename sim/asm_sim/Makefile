@@ -23,7 +23,7 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu_control_unit.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/alu.sv
 
 # DMA
-VERILOG_SOURCES += $(shell pwd)/../../rtl/dma/ids_dma.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/dma/pim_dma.sv
 
 
 # SPI SLAVE
@@ -38,16 +38,18 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart/uart_transmitter.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart/uart_receiver.v
 
 # PIM WRAPPER 
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/activation_buffer2.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/dmux.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/pim_controller.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/activation_buffer.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/pim.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/pim_controller_1.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/result_buffer.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/weight_buffer.v
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/PIM_TOP.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/PIM_1_TOP.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/pim_wrap/WL_driver.v
+
 
 # BUS
-VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/ids_bus.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/ids_arbiter.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/sys_bus.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/bus/bus_arbiter.sv
 
 # MEMORY
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/imem.sv

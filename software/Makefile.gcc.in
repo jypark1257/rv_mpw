@@ -16,7 +16,7 @@ LIB_SOURCES := $(wildcard ../rv_lib/*.c)
 CSRCS := $(wildcard *.c)
 SSRCS := $(wildcard *.s)
 
-LDSRC := ../mpw_linker.ld
+LDSRC := ../linker_script.ld
 
 # ifeq ($(BIOS_PROG), true)
 # 	LDSRC := ../bios_linker.ld

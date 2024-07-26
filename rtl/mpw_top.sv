@@ -31,32 +31,32 @@ module mpw_top (
         .RESET_PC(32'h4000_0000),
         .BAUD_RATE(115200)
     ) core_top_0 (
-    .i_clk              (i_clk),
-    // CORE RESET
-    .i_rv_rst_n         (i_rv_rst_n),
+        .i_clk              (i_clk),
+        // CORE RESET
+        .i_rv_rst_n         (i_rv_rst_n),
+        
+        // SPI RESET
+        .i_spi_rst_n        (i_spi_rst_n),
     
-    // SPI RESET
-    .i_spi_rst_n        (i_spi_rst_n),
-
-    // SPI
-    .i_sclk             (sclk),
-    .i_cs               (cs),
-    .i_mosi             (mosi),
-    .o_miso             (miso),
-
-    // UART
-    .i_serial_rx        (i_serial_rx),
-    .o_serial_tx        (o_serial_tx),
-
-    // PIM I/F
-    .o_pim_addr         (pim_addr),
-    .o_pim_wr_data      (pim_wr_data),
-    .i_pim_rd_data      (pim_rd_data)
+        // SPI
+        .i_sclk             (sclk),
+        .i_cs               (cs),
+        .i_mosi             (mosi),
+        .o_miso             (miso),
+    
+        // UART
+        .i_serial_rx        (i_serial_rx),
+        .o_serial_tx        (o_serial_tx),
+    
+        // PIM I/F
+        .o_pim_addr         (pim_addr),
+        .o_pim_wr_data      (pim_wr_data),
+        .i_pim_rd_data      (pim_rd_data)
     );
 
     PIM_TOP pim_top_0 (
-        .i_clk(i_clk),
-        .i_rst(!i_rv_rst_n),
+        .CLK(i_clk),
+        .RSTN(i_rv_rst_n),
 
         .i_address(pim_addr),
         .i_data(pim_wr_data),

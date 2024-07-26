@@ -1,6 +1,6 @@
 <testsuites name="results">
   <testsuite name="all" package="all">
-    <property name="random_seed" value="1721281058" />
-    <testcase name="core_bench" classname="test_pim" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/pim_sim/test_pim.py" lineno="53" time="45.16605472564697" sim_time_ns="350015.001" ratio_time="7749.514610609733" />
+    <property name="random_seed" value="1721973271" />
+    <testcase name="core_bench" classname="test_pim" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/pim_sim/test_pim.py" lineno="53" time="3.250048875808716" sim_time_ns="40266.001" ratio_time="12389.35244934756" />
   </testsuite>
 </testsuites>

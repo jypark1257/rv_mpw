@@ -1,6 +1,0 @@
-<testsuites name="results">
-  <testsuite name="all" package="all">
-    <property name="random_seed" value="1719224141" />
-    <testcase name="test_buf" classname="test_buffer" file="/home/pjy-wsl/idslab-cores/ids_mpw/sim/buffer_sim/test_buffer.py" lineno="17" time="2.3550195693969727" sim_time_ns="100955.001" ratio_time="42868.0093838246" />
-  </testsuite>
-</testsuites>

@@ -22,6 +22,10 @@ module core_top #(
     input                       i_serial_rx,
     output logic                o_serial_tx,
 
+    // SYNC RESET
+    output logic                o_sync_rst_n,
+
+
     // PIM I/F
     output logic    [XLEN-1:0]  o_pim_addr,
     output logic    [XLEN-1:0]  o_pim_wr_data,
@@ -121,16 +125,23 @@ module core_top #(
     logic [XLEN-1:0]            dma_rd_data_1;
     logic [XLEN-1:0]            dma_wr_data_1;
     logic                       dma_busy;
-    
-    // BUS rst_n
-    assign bus_rst_n = i_rv_rst_n || i_spi_rst_n;
+    // reset syncs
+    logic rst_n [0:1];
+    always_ff @(posedge i_clk)begin
+        rst_n[0] <= i_rv_rst_n;
+        rst_n[1] <= rst_n[0];
+    end
+    assign rv_rst_n = rst_n[1];
+    assign o_sync_rst_n = rv_rst_n;
 
+    // BUS rst_n
+    assign bus_rst_n = rv_rst_n || i_spi_rst_n;
 
     core #(
         .RESET_PC               (RESET_PC)
     ) core_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (i_rv_rst_n),
+        .i_rst_n                (rv_rst_n),
 
         // instruction interface
         .o_instr_addr           (instr_addr),
@@ -161,7 +172,7 @@ module core_top #(
         .o_dma_mem_addr         (dma_mem_addr)
     );
 
-    ids_dma #(
+    pim_dma #(
         .PIM_CTRL               (32'h4000_0010),
         .PIM_R                  (32'h4000_0020),
         .PIM_W_WEIGHT           (32'h4000_0040),
@@ -196,7 +207,7 @@ module core_top #(
 
 
     // IDS BUS
-    ids_bus bus_0 (
+    sys_bus bus_0 (
         .i_clk                  (i_clk), 
         .i_rst_n                (bus_rst_n),
 
@@ -358,7 +369,7 @@ module core_top #(
         .UART_TRANS             (32'h8000_0008)
     ) on_chip_uart (
         .i_clk                  (i_clk), 
-        .i_rst_n                (i_rv_rst_n), 
+        .i_rst_n                (rv_rst_n), 
         .i_uart_addr            (uart_addr),
         .i_uart_write           (uart_write),
         .i_uart_read            (uart_read),
