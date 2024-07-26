@@ -1,1 +1,2 @@
-/peripheral/pim_wrap/*
+/rtl/peripheral/pim_wrap/*
+/rtl/memory/*.v
