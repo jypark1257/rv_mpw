@@ -1,10 +1,11 @@
-# 32-bit RISC-V CORE
+# 32-bit RISC-V
 
 4-stage, in-order core which implements the 32-bit RISC-V instruction set. 
-- [x] Base Instruction (RV32I)
-- [] Zicsr Extenstion
-- [] M Extension
-- [] F Extension
+- [v] Base Instruction (RV32I)
+
+Peripherals
+- [v] UART
+- [v] SPI Slave
 
 ## Schematic
 <p align="center">
@@ -67,30 +68,3 @@ cd ../../sim/asm_sim
 make
 ```
 
-# Running simulations
-
-Simulating the core is done by using cocotb based testbench `sim/core_sim/test_core.py`.
-
-1. Compile your program using Makefile `software/Makefile.gcc.in`.
-    * The skeleton program is included in `software/test`.
-2. Run cocotb testbench model in `sim/core_sim/test_core.py`.
-
-Here is how you can run the `software/test/test.c` C program with the cocotb testbench: 
-
-```sh
-cd software/test
-
-# Compile C program using Makefile
-# compiled hex will be automatically initiliazed in the memory of the core
-make
-
-cd ../../sim/core_sim
-
-# Make cocotb testbench model and generate waveform dump file
-# the fst dump file can be found in ./sim_build/core_top.fst
-make WAVES=1
-
-# Check waveform
-gtkwave ./sim_build/core_top.fst
-```# ids_mpw
-# ids_mpw
