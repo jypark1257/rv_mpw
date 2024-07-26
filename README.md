@@ -19,7 +19,7 @@ The following instructions will allow you to compile and run an icarus verilog m
 
 1. Checkout the repository
 ```sh
-git clone https://github.com/jypark1257/ids_mpw.git
+git clone https://github.com/jypark1257/rv_mpw.git
 ```
 
 2. Install the GNU Toolchain [riscv-gnu-toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)
@@ -27,7 +27,7 @@ git clone https://github.com/jypark1257/ids_mpw.git
 git clone https://github.com/riscv-collab/riscv-gnu-toolchain.git --recursive
 cd riscv-gnu-toolchain
 ./configure --prefix=/opt/riscv
-make
+sudo make
 ```
 
 3. Install the sifive [elf2hex](https://github.com/sifive/elf2hex.git)
