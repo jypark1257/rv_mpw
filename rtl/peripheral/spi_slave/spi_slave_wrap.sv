@@ -221,7 +221,7 @@ module spi_slave_wrap (
     end
 
 
-    RisingEdgeDetector RED(
+    rising_edge_detect RED(
         .i_clk      (i_clk),
         .i_signal   (cs),
         .o_edge     (rising_cs)

@@ -3,7 +3,9 @@ module pim_dma #(
     parameter PIM_CTRL          = 32'h4000_0010,
     parameter PIM_R             = 32'h4000_0020,
     parameter PIM_W_WEIGHT      = 32'h4000_0040,
-    parameter PIM_W_ACTIVATION  = 32'h4000_0080
+    parameter PIM_W_ACTIVATION  = 32'h4000_0080,
+    parameter PIM_W_KEY         = 32'h4000_0100,
+    parameter PIM_W_VREF        = 32'h4000_0200
 ) (
     input                   i_clk,
     input                   i_rst_n,
@@ -43,10 +45,12 @@ module pim_dma #(
 
     localparam FUNCT_WEIGHT = 2'b01;
     localparam FUNCT_ACT    = 2'b10;
-    
-    localparam PIM_WRITE    = 3'b001;    // write weight to pim
-    localparam PIM_COMPUTE  = 3'b010;    // write activation to pim
+
+    localparam PIM_WRITE    = 3'b001;   // write weight to pim
+    localparam PIM_COMPUTE  = 3'b010;   // write activation to pim
     localparam PIM_LOAD     = 3'b100;   // load output result from pim
+    localparam PIM_KEY    = 3'b101;   // write keys
+    localparam PIM_VREF   = 3'b110;
 
     // PIM status
     logic pim_busy;
@@ -88,9 +92,11 @@ module pim_dma #(
     // --|PIM address select|-------------------------------------------------------------
     always_comb begin
         case (funct3)
-            3'b001: pim_write_addr = PIM_W_WEIGHT | sel_pim;
-            3'b010: pim_write_addr = PIM_W_ACTIVATION | sel_pim;
-            3'b100: pim_read_addr = PIM_R | sel_pim;
+            PIM_WRITE: pim_write_addr = PIM_W_WEIGHT | sel_pim;
+            PIM_COMPUTE: pim_write_addr = PIM_W_ACTIVATION | sel_pim;
+            PIM_LOAD: pim_read_addr = PIM_R | sel_pim;
+            PIM_KEY: pim_write_addr = PIM_W_KEY | sel_pim;
+            PIM_VREF: pim_write_addr = PIM_W_VREF | sel_pim;
             default: begin
                 pim_write_addr = '0;
                 pim_read_addr = '0;
@@ -166,7 +172,7 @@ module pim_dma #(
             end
             RW_SETUP: begin
                 if (i_bus_gnt) begin
-                    if ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) begin
+                    if ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE) || (funct3 == PIM_KEY) || (funct3 == PIM_VREF)) begin
                         if (!pim_busy) begin
                             next_state = R_EXE;
                         end else begin

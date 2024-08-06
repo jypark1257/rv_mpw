@@ -1,5 +1,5 @@
 
-module RisingEdgeDetector (
+module rising_edge_detect (
     input           i_clk,
     input           i_signal,
     output  logic   o_edge

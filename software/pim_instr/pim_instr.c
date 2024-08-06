@@ -28,6 +28,11 @@ int main() {
         :
         : [a] "r" (source), [b] "r" (result_size)
     );
+    asm volatile ( 
+        "pim_key %[a], 1(%[b])\n\t"
+        :
+        : [a] "r" (source), [b] "r" (result_size)
+    );
 
     while (1);
 

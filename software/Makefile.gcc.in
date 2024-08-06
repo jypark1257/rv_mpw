@@ -2,13 +2,13 @@
 # riscv64-linux-gnu-gcc - Compiler from system packages (for local dev)
 # riscv64-unknown-elf-gcc - From SiFive (on c125m/eda machines)
 
-RISCV_PIM := /opt/riscv_pim/bin/riscv64-unknown-elf
+RISCV_CUSTOM := /opt/riscv_custom/bin/riscv64-unknown-elf
 RISCV_DEFAULT := riscv64-unknown-elf
 
-ifeq ($(GCC_PIM), true)
+ifeq ($(GCC_CUSTOM), true)
     RISCV := $(RISCV_DEFAULT)
 else
-    RISCV := $(RISCV_PIM)
+    RISCV := $(RISCV_CUSTOM)
 endif
 
 LIB_PATH := ../rv_lib
