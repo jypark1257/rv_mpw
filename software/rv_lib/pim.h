@@ -15,3 +15,4 @@ void pim_compute(uint32_t source_addr, uint8_t sel_pim, uint32_t size);
 void pim_load(uint32_t source_addr, uint8_t sel_pim, uint32_t size);
 void pim_key(uint32_t source_addr, uint8_t sel_pim, uint32_t size);
 void pim_vref(uint32_t source_addr, uint8_t sel_pim, uint32_t size);
+void pim_mode(uint32_t source_addr, uint8_t sel_pim, uint32_t size);

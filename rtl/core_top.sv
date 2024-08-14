@@ -32,9 +32,12 @@ module core_top #(
     input           [XLEN-1:0]  i_pim_rd_data
 );
 
-    logic                       rv_rst_n;
-    logic                       bus_rst_n;
+    logic                       sync_spi_rst_n;
+    logic                       sync_rv_rst_n;
+    logic                       sync_bus_rst_n;
 
+    logic                       serial_rx;
+    logic                       serial_tx;
 
     // SPI I/F
     logic                       req_spi;
@@ -125,23 +128,52 @@ module core_top #(
     logic [XLEN-1:0]            dma_rd_data_1;
     logic [XLEN-1:0]            dma_wr_data_1;
     logic                       dma_busy;
+
     // reset syncs
-    logic rst_n [0:1];
-    always_ff @(posedge i_clk)begin
-        rst_n[0] <= i_rv_rst_n;
-        rst_n[1] <= rst_n[0];
+    logic rst_n[0:4];
+    logic spi_rst_n[0:4];
+    always_ff @(posedge i_clk or negedge i_rst_n)begin
+        if (i_rst_n == '0) begin
+            rst_n[0] <= '0;
+            rst_n[1] <= '0;
+            rst_n[2] <= '0;
+            rst_n[3] <= '0;
+            rst_n[4] <= '0;
+        end else begin
+            rst_n[0] <= i_rv_rst_n;
+            rst_n[1] <= rst_n[0];
+            rst_n[2] <= rst_n[1];
+            rst_n[3] <= rst_n[2];
+            rst_n[4] <= rst_n[3];
+        end
     end
-    assign rv_rst_n = rst_n[1];
+    always_ff @(posedge i_clk or negedge i_spi_rst_n)begin
+        if (i_spi_rst_n == '0) begin
+            spi_rst_n[0] <= '0;
+            spi_rst_n[1] <= '0;
+            spi_rst_n[2] <= '0;
+            spi_rst_n[3] <= '0;
+            spi_rst_n[4] <= '0;
+        end else begin
+            spi_rst_n[0] <= i_spi_rst_n;
+            spi_rst_n[1] <= spi_rst_n[0];
+            spi_rst_n[2] <= spi_rst_n[1];
+            spi_rst_n[3] <= spi_rst_n[2];
+            spi_rst_n[4] <= spi_rst_n[3];
+        end
+    end
+    assign sync_rv_rst_n = rst_n[4];
+    assign sync_spi_rst_n = spi_rst_n[4];
     assign o_sync_rst_n = rv_rst_n;
 
     // BUS rst_n
-    assign bus_rst_n = rv_rst_n || i_spi_rst_n;
+    assign sync_bus_rst_n = sync_rv_rst_n || sync_spi_rst_n;
 
     core #(
         .RESET_PC               (RESET_PC)
     ) core_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (rv_rst_n),
+        .i_rst_n                (sync_rv_rst_n),
 
         // instruction interface
         .o_instr_addr           (instr_addr),
@@ -176,10 +208,13 @@ module core_top #(
         .PIM_CTRL               (32'h4000_0010),
         .PIM_R                  (32'h4000_0020),
         .PIM_W_WEIGHT           (32'h4000_0040),
-        .PIM_W_ACTIVATION       (32'h4000_0080)
+        .PIM_W_ACTIVATION       (32'h4000_0080),
+        .PIM_W_KEY              (32'h4000_0100),
+        .PIM_W_VREF             (32'h4000_0200),
+        .PIM_W_MODE             (32'h4000_0400)
     ) dma_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (i_rv_rst_n),
+        .i_rst_n                (sync_rv_rst_n),
         // CORE interface
         .i_dma_en               (dma_en),
         .i_funct3               (dma_funct3),
@@ -209,7 +244,7 @@ module core_top #(
     // IDS BUS
     sys_bus bus_0 (
         .i_clk                  (i_clk), 
-        .i_rst_n                (bus_rst_n),
+        .i_rst_n                (sync_bus_rst_n),
 
     // MASTERS
     // RV IMEM
@@ -301,7 +336,7 @@ module core_top #(
     // SPI SLAVE
     spi_slave_wrap spi_slave_0 (
         .i_clk                  (i_clk),
-        .i_rst_n                (i_spi_rst_n),
+        .i_rst_n                (sync_spi_rst_n),
         // BUS I/F
         .o_req_spi              (req_spi),
         .i_gnt_spi              (gnt_spi),
@@ -321,7 +356,7 @@ module core_top #(
     // IMEM
     sram_1024w_32b M0_0 (
 		.CLK 			(i_clk),
-		.CEN			(1'b0),
+		.CEN			(!{imem_read || imem_write}),
         .GWEN           (imem_read),
 		.WEN			(~({4{imem_write}} & imem_size)),
 		.A 				(imem_addr[11:2]),     // 10-bit address
@@ -335,7 +370,7 @@ module core_top #(
     // DMEM
     sram_1024w_32b M0_1 (
 		.CLK 			(i_clk),
-		.CEN			(1'b0),
+		.CEN			(!{dmem_read || dmem_write}),
         .GWEN           (dmem_read),
 		.WEN			(~({4{dmem_write}} & dmem_size)),
 		.A 				(dmem_addr[11:2]),
@@ -349,7 +384,7 @@ module core_top #(
     // weight and activation buffer
     sram_8192w_32b M1_0 (
 		.CLK 			(i_clk),
-		.CEN			(1'b0),
+		.CEN			(!{buf_read || buf_write}),
         .GWEN           (buf_read),
 		.WEN			(~({4{buf_write}} & buf_size)),
 		.A 				(buf_addr[14:2]),     // 10-bit address
@@ -369,20 +404,42 @@ module core_top #(
         .UART_TRANS             (32'h8000_0008)
     ) on_chip_uart (
         .i_clk                  (i_clk), 
-        .i_rst_n                (rv_rst_n), 
+        .i_rst_n                (sync_rv_rst_n), 
         .i_uart_addr            (uart_addr),
         .i_uart_write           (uart_write),
         .i_uart_read            (uart_read),
         .i_uart_size            (uart_size),
         .i_uart_din             (uart_wr_data),
         .o_uart_dout            (uart_rd_data),
-        .i_serial_rx            (i_serial_rx),
-        .o_serial_tx            (o_serial_tx)
+        .i_serial_rx            (serial_rx),
+        .o_serial_tx            (serial_tx)
     );
 
-    assign o_pim_addr = pim_addr;
-    assign o_pim_wr_data = pim_wr_data;
+    // PIM controller INPUT/OUTPUT
+    always_ff @(posedge i_clk or negedge sync_rv_rst_n) begin
+        if (sync_rv_rst_n == '0) begin
+            o_pim_add <= '0;
+            o_pim_wr_data <= '0;
+        end else begin
+            o_pim_addr <= pim_addr;
+            o_pim_wr_data <= pim_wr_data;
+        end
+    end
     assign pim_rd_data = i_pim_rd_data;
 
 
+    // UART INPUT/OUTPUT
+    always_ff @(posedge i_clk or negedge sync_rv_rst_n) begin
+        if (sync_rv_rst_n == '0) begin
+            o_serial_tx <= '0;
+            serial_rx <= '0;
+        end else begin
+            o_serial_tx <= serial_tx;
+            serial_rx <= i_serial_rx;
+        end 
+    end
+
+    
+
 endmodule
+ 

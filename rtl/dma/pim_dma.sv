@@ -5,7 +5,8 @@ module pim_dma #(
     parameter PIM_W_WEIGHT      = 32'h4000_0040,
     parameter PIM_W_ACTIVATION  = 32'h4000_0080,
     parameter PIM_W_KEY         = 32'h4000_0100,
-    parameter PIM_W_VREF        = 32'h4000_0200
+    parameter PIM_W_VREF        = 32'h4000_0200,
+    parameter PIM_W_MODE        = 32'h4000_0400
 ) (
     input                   i_clk,
     input                   i_rst_n,
