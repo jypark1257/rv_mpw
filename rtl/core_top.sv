@@ -418,7 +418,7 @@ module core_top #(
     // PIM controller INPUT/OUTPUT
     always_ff @(posedge i_clk or negedge sync_rv_rst_n) begin
         if (sync_rv_rst_n == '0) begin
-            o_pim_add <= '0;
+            o_pim_addr <= '0;
             o_pim_wr_data <= '0;
         end else begin
             o_pim_addr <= pim_addr;

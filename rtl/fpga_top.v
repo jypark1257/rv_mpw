@@ -104,7 +104,11 @@ module fpga_top(
         .o_miso(miso),
 
         .i_serial_rx(cpu_rx),
-        .o_serial_tx(cpu_tx)
+        .o_serial_tx(cpu_tx),
+
+        .o_pim_addr(),
+        .o_pim_wr_data(),
+        .i_pim_rd_data()
     );
 
 

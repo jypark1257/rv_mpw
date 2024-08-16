@@ -4,9 +4,9 @@ module pim_dma #(
     parameter PIM_R             = 32'h4000_0020,
     parameter PIM_W_WEIGHT      = 32'h4000_0040,
     parameter PIM_W_ACTIVATION  = 32'h4000_0080,
-    parameter PIM_W_KEY         = 32'h4000_0100,
-    parameter PIM_W_VREF        = 32'h4000_0200,
-    parameter PIM_W_MODE        = 32'h4000_0400
+	parameter PIM_W_KEY			= 32'h4000_0100,
+	parameter PIM_W_VREF		= 32'h4000_0200,
+	parameter PIM_W_MODE		= 32'h4000_0400
 ) (
     input                   i_clk,
     input                   i_rst_n,
@@ -42,19 +42,21 @@ module pim_dma #(
 );
 
     // FSM states
-    typedef enum logic [2:0] { IDLE, RW_SETUP, R_EXE, RW_EXE, R_PIM_EXE, RW_PIM_EXE } e_state;
+    typedef enum logic [2:0] { IDLE, RW_SETUP, R_EXE, RW_EXE, R_PIM_WAIT, R_PIM_EXE, RW_PIM_EXE } e_state;
 
     localparam FUNCT_WEIGHT = 2'b01;
     localparam FUNCT_ACT    = 2'b10;
-
-    localparam PIM_WRITE    = 3'b001;   // write weight to pim
-    localparam PIM_COMPUTE  = 3'b010;   // write activation to pim
+    
+    localparam PIM_WRITE    = 3'b001;    // write weight to pim
+    localparam PIM_COMPUTE  = 3'b010;    // write activation to pim
     localparam PIM_LOAD     = 3'b100;   // load output result from pim
-    localparam PIM_KEY    = 3'b101;   // write keys
-    localparam PIM_VREF   = 3'b110;
-
+	localparam PIM_KEY		= 3'b101;
+	localparam PIM_VREF		= 3'b110;
+	localparam PIM_MODE		= 3'b111;
+	
     // PIM status
-    logic pim_busy;
+    // logic pim_busy;
+	logic pim_valid;
     logic pim_data_valid; 
 
     // request for operation?
@@ -85,20 +87,24 @@ module pim_dma #(
     logic [31:0] pim_read_addr;
     
     // --|PIM status|--------------------------------------------------------------------
-    // transfer data when       (!pim_busy)
-    // load data from pim when  (!pim_busy) && (pim_data_valid) 
-    assign pim_busy = i_dma_rd_data_1[0];
-    assign pim_data_valid = i_dma_rd_data_1[1];
+    // transfer data when       (pim_valid)
+    // load data from pim when  (pim_valid) && (pim_data_valid) 
+    // assign pim_busy = i_dma_rd_data_1[0];
+	assign pim_valid = i_dma_rd_data_1[0];
+	assign pim_data_valid = i_dma_rd_data_1[1];
 
     // --|PIM address select|-------------------------------------------------------------
     always_comb begin
+		pim_write_addr = '0;
+		pim_read_addr = '0;
         case (funct3)
             PIM_WRITE: pim_write_addr = PIM_W_WEIGHT | sel_pim;
             PIM_COMPUTE: pim_write_addr = PIM_W_ACTIVATION | sel_pim;
             PIM_LOAD: pim_read_addr = PIM_R | sel_pim;
-            PIM_KEY: pim_write_addr = PIM_W_KEY | sel_pim;
-            PIM_VREF: pim_write_addr = PIM_W_VREF | sel_pim;
-            default: begin
+			PIM_KEY: pim_write_addr = PIM_W_KEY | sel_pim;
+			PIM_VREF: pim_write_addr = PIM_W_VREF | sel_pim;
+			PIM_MODE: pim_write_addr = PIM_W_MODE | sel_pim;
+			default: begin
                 pim_write_addr = '0;
                 pim_read_addr = '0;
             end
@@ -173,15 +179,15 @@ module pim_dma #(
             end
             RW_SETUP: begin
                 if (i_bus_gnt) begin
-                    if ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE) || (funct3 == PIM_KEY) || (funct3 == PIM_VREF)) begin
-                        if (!pim_busy) begin
+                    if ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE) || (funct3 == PIM_KEY) || (funct3 == PIM_VREF) || (funct3 == PIM_MODE)) begin
+                        if (pim_valid) begin
                             next_state = R_EXE;
                         end else begin
                             next_state = RW_SETUP;
                         end
                     end else if (funct3 == PIM_LOAD) begin
-                        if ((!pim_busy) && pim_data_valid) begin
-                            next_state = R_PIM_EXE;
+                        if ((pim_valid) && pim_data_valid) begin
+                            next_state = R_PIM_WAIT;
                         end else begin
                             next_state = RW_SETUP;
                         end
@@ -192,6 +198,13 @@ module pim_dma #(
                     next_state = RW_SETUP;
                 end
             end
+			R_PIM_WAIT: begin
+				if (!i_bus_gnt) begin
+					next_state = R_PIM_WAIT;
+				end else begin
+					next_state = R_PIM_EXE;
+				end
+			end
             R_PIM_EXE: begin
                 if (!i_bus_gnt) begin
                     next_state = R_PIM_EXE;
@@ -261,6 +274,40 @@ module pim_dma #(
                 o_dma_size_1 = 4'b1111;
                 o_dma_wr_data_1 = '0;
             end
+			R_PIM_WAIT: begin
+				o_dma_busy = 1'b1;
+				o_bus_req = 1'b1;
+				if (i_bus_gnt) begin
+					cnt_decr = 1'b0;
+					mem_incr = 1'b0;
+					// DMA SRAM I/F
+					o_dma_addr_0 = '0;
+					o_dma_write_0 = '0;
+					o_dma_read_0 = '0;
+					o_dma_size_0 = 4'b1111;
+					o_dma_wr_data_0 = '0;
+
+					o_dma_addr_1 = pim_read_addr;
+					o_dma_write_1 = 1'b0;
+					o_dma_read_1 = 1'b1;
+					o_dma_size_1 = 4'b1111;
+					o_dma_wr_data_1 = '0;
+				end else begin
+					cnt_decr = 1'b0;
+					mem_incr = 1'b0;
+					o_dma_addr_0 = '0;
+					o_dma_write_0 = '0;
+					o_dma_read_0 = '0;
+					o_dma_size_0 =  4'b1111;
+					o_dma_wr_data_0 = '0;
+
+					o_dma_addr_1 = '0;
+					o_dma_write_1 = '0;
+					o_dma_read_1 = '0;
+					o_dma_size_1 = 4'b1111;
+					o_dma_wr_data_1 = '0;
+				end
+			end
             R_PIM_EXE: begin
                 o_dma_busy = 1'b1;
                 o_bus_req = 1'b1;
@@ -336,7 +383,6 @@ module pim_dma #(
                     cnt_decr = 1'b1;    
                     mem_incr = 1'b1;             
                     // DMA SRAM I/F
-                    //o_dma_addr_0 = ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) ? mem_addr : pim_read_addr;
                     o_dma_addr_0 = (!trans_running) ? '0 : mem_addr;
                     o_dma_write_0 = 1'b0;
                     o_dma_read_0 = (!trans_running) ? 1'b0 : 1'b1;
@@ -370,7 +416,6 @@ module pim_dma #(
                     cnt_decr = 1'b1;    
                     mem_incr = 1'b1;             
                     // DMA SRAM I/F
-                    //o_dma_addr_0 = ((funct3 == PIM_WRITE) || (funct3 == PIM_COMPUTE)) ? mem_addr : pim_read_addr;
                     o_dma_addr_0 = mem_addr;
                     o_dma_write_0 = 1'b1;
                     o_dma_read_0 = '0;
@@ -379,7 +424,7 @@ module pim_dma #(
         
                     o_dma_addr_1 = (!trans_running) ? '0 : pim_read_addr;
                     o_dma_write_1 = 1'b0;
-                    o_dma_read_1 = (!trans_running) ? 1'b0 : 1'b1;
+                    o_dma_read_1 = (!trans_running) ? '0 : 1'b1;
                     o_dma_size_1 = 4'b1111;
                     o_dma_wr_data_1 = '0;
                 end else begin
