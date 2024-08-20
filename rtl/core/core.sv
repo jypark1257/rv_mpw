@@ -1,10 +1,10 @@
-`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+`include "/home/pjy-wsl/rv_cores/rv_mpw/rtl/headers/opcode.svh"
 //`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/pipe_reg.svh"
 
 module core #(
     parameter XLEN = 32,
     parameter FLEN = 32,
-    parameter RESET_PC = 32'h4000_0000
+    parameter RESET_PC = 32'h1000_0000
 
 ) (
     input                       i_clk,

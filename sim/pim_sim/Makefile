@@ -7,7 +7,7 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/headers/pipe_reg.svh
 VERILOG_SOURCES += $(shell pwd)/../../rtl/headers/opcode.svh
 
 # CORE
-VERILOG_SOURCES += $(shell pwd)/../../rtl/core/core_top.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/core_top.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/core.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/core_if_stage.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/core/core_id_stage.sv
@@ -29,7 +29,7 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/dma/pim_dma.sv
 # SPI SLAVE
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/spi_slave/spi_slave_wrap.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/spi_slave/spi_slave.sv
-VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/spi_slave/RisingEdgeDetector.sv
+VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/spi_slave/rising_edge_detect.sv
 
 # UART 
 VERILOG_SOURCES += $(shell pwd)/../../rtl/peripheral/uart/uart_wrap.sv
@@ -56,6 +56,7 @@ VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/imem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/dmem.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/pim_buffer.sv
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_1024w_32b.v
+VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_4096w_32b.v
 VERILOG_SOURCES += $(shell pwd)/../../rtl/memory/sram_8192w_32b.v
 
 TOPLEVEL = mpw_top

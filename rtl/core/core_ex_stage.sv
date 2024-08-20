@@ -1,4 +1,4 @@
-`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+`include "/home/pjy-wsl/rv_cores/rv_mpw/rtl/headers/opcode.svh"
 
 module core_ex_stage #(
     parameter XLEN = 32

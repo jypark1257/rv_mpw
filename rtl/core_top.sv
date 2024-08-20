@@ -2,42 +2,36 @@
 module core_top #(
     parameter XLEN              = 32,
     parameter CPU_CLOCK_FREQ    = 250_000_000,
-    parameter RESET_PC          = 32'h4000_0000,
+    parameter RESET_PC          = 32'h1000_0000,
     parameter BAUD_RATE         = 115200
 ) (
-    input                       i_clk,
+    input                       CLK,
     // CORE RESET
-    input                       i_rv_rst_n,
-    
-    // SPI RESET
-    input                       i_spi_rst_n,
-
+    input                       RVRSTN,
+	// SYNC RESET
+	output						SYNCRSTN,
+    //UART 
+	input						SERIALRX,
+	output logic				SERIALTX,
+	
+	// SPI RESET
+    input                       SPIRSTN,
     // SPI
-    input                       i_sclk,
-    input                       i_cs,
-    input                       i_mosi,
-    output logic                o_miso,
-
-    // UART
-    input                       i_serial_rx,
-    output logic                o_serial_tx,
-
-    // SYNC RESET
-    output logic                o_sync_rst_n,
-
+    input                       SCLK,
+    input                       CS,
+    input                       MOSI,
+    output logic                MISO,
 
     // PIM I/F
-    output logic    [XLEN-1:0]  o_pim_addr,
-    output logic    [XLEN-1:0]  o_pim_wr_data,
-    input           [XLEN-1:0]  i_pim_rd_data
+    output logic    [XLEN-1:0]  PIMADDR,
+    output logic    [XLEN-1:0]  PIMWD,
+    input           [XLEN-1:0]	PIMRD
 );
 
-    logic                       sync_spi_rst_n;
+	logic						sync_spi_rst_n;
     logic                       sync_rv_rst_n;
     logic                       sync_bus_rst_n;
 
-    logic                       serial_rx;
-    logic                       serial_tx;
 
     // SPI I/F
     logic                       req_spi;
@@ -82,15 +76,7 @@ module core_top #(
     logic [3:0]                 dmem_size;  
     logic                       dmem_read;
     logic                       dmem_write;
-
-    // PIM BUFFER I/F
-    logic [XLEN-1:0]            buf_addr;
-    logic [XLEN-1:0]            buf_rd_data;
-    logic [XLEN-1:0]            buf_wr_data;
-    logic [3:0]                 buf_size;  
-    logic                       buf_read;
-    logic                       buf_write;
-    
+ 
     // UART
     logic [XLEN-1:0]            uart_addr;
     logic [XLEN-1:0]            uart_rd_data;
@@ -129,50 +115,70 @@ module core_top #(
     logic [XLEN-1:0]            dma_wr_data_1;
     logic                       dma_busy;
 
-    // reset syncs
-    logic rst_n[0:4];
-    logic spi_rst_n[0:4];
-    always_ff @(posedge i_clk or negedge i_rst_n)begin
-        if (i_rst_n == '0) begin
-            rst_n[0] <= '0;
-            rst_n[1] <= '0;
-            rst_n[2] <= '0;
-            rst_n[3] <= '0;
-            rst_n[4] <= '0;
-        end else begin
-            rst_n[0] <= i_rv_rst_n;
-            rst_n[1] <= rst_n[0];
-            rst_n[2] <= rst_n[1];
-            rst_n[3] <= rst_n[2];
-            rst_n[4] <= rst_n[3];
-        end
-    end
-    always_ff @(posedge i_clk or negedge i_spi_rst_n)begin
-        if (i_spi_rst_n == '0) begin
-            spi_rst_n[0] <= '0;
-            spi_rst_n[1] <= '0;
-            spi_rst_n[2] <= '0;
-            spi_rst_n[3] <= '0;
-            spi_rst_n[4] <= '0;
-        end else begin
-            spi_rst_n[0] <= i_spi_rst_n;
-            spi_rst_n[1] <= spi_rst_n[0];
-            spi_rst_n[2] <= spi_rst_n[1];
-            spi_rst_n[3] <= spi_rst_n[2];
-            spi_rst_n[4] <= spi_rst_n[3];
-        end
-    end
-    assign sync_rv_rst_n = rst_n[4];
-    assign sync_spi_rst_n = spi_rst_n[4];
-    assign o_sync_rst_n = rv_rst_n;
+	// 16KB mem 0
+	logic [XLEN-1:0]			buf_addr_0;
+	logic [XLEN-1:0]			buf_rd_data_0;
+	logic [XLEN-1:0]			buf_wr_data_0;
+	logic [3:0]					buf_size_0;
+	logic						buf_read_0;
+	logic						buf_write_0;
+	// 16KB mem 1
+	logic [XLEN-1:0]			buf_addr_1;
+	logic [XLEN-1:0]			buf_rd_data_1;
+	logic [XLEN-1:0]			buf_wr_data_1;
+	logic [3:0]					buf_size_1;
+	logic						buf_read_1;
+	logic						buf_write_1;
+
+	logic serial_tx;
+	logic serial_rx;
+
+	logic rv_rst_n[0:4];
+	logic spi_rst_n[0:4];
+	always_ff @(posedge CLK or negedge RVRSTN) begin
+		if (RVRSTN == '0) begin
+			rv_rst_n[0] <= '0;
+			rv_rst_n[1] <= '0;
+			rv_rst_n[2] <= '0;
+			rv_rst_n[3] <= '0;
+			rv_rst_n[4] <= '0;
+		end else begin
+			rv_rst_n[0] <= RVRSTN;
+			rv_rst_n[1] <= rv_rst_n[0];
+			rv_rst_n[2] <= rv_rst_n[1];
+			rv_rst_n[3] <= rv_rst_n[2];
+			rv_rst_n[4] <= rv_rst_n[3];
+		end
+	end
+	assign sync_rv_rst_n = rv_rst_n[4];
+	assign SYNCRSTN = sync_rv_rst_n;
+    
+	always_ff @(posedge CLK or negedge SPIRSTN) begin
+		if (SPIRSTN == '0) begin
+			spi_rst_n[0] <= '0;
+			spi_rst_n[1] <= '0;
+			spi_rst_n[2] <= '0;
+			spi_rst_n[3] <= '0;
+			spi_rst_n[4] <= '0;
+		end else begin
+			spi_rst_n[0] <= SPIRSTN;
+			spi_rst_n[1] <= spi_rst_n[0];
+			spi_rst_n[2] <= spi_rst_n[1];
+			spi_rst_n[3] <= spi_rst_n[2];
+			spi_rst_n[4] <= spi_rst_n[3];
+		end	
+	end
+	assign sync_spi_rst_n = spi_rst_n[4];
+
 
     // BUS rst_n
     assign sync_bus_rst_n = sync_rv_rst_n || sync_spi_rst_n;
 
+
     core #(
         .RESET_PC               (RESET_PC)
     ) core_0 (
-        .i_clk                  (i_clk),
+        .i_clk                  (CLK),
         .i_rst_n                (sync_rv_rst_n),
 
         // instruction interface
@@ -204,16 +210,16 @@ module core_top #(
         .o_dma_mem_addr         (dma_mem_addr)
     );
 
-    pim_dma #(
+	pim_dma #(
         .PIM_CTRL               (32'h4000_0010),
         .PIM_R                  (32'h4000_0020),
         .PIM_W_WEIGHT           (32'h4000_0040),
         .PIM_W_ACTIVATION       (32'h4000_0080),
-        .PIM_W_KEY              (32'h4000_0100),
-        .PIM_W_VREF             (32'h4000_0200),
-        .PIM_W_MODE             (32'h4000_0400)
-    ) dma_0 (
-        .i_clk                  (i_clk),
+		.PIM_W_KEY				(32'h4000_0100),
+		.PIM_W_VREF				(32'h4000_0200),
+		.PIM_W_MODE				(32'h4000_0400)
+	) dma_0 (
+        .i_clk                  (CLK),
         .i_rst_n                (sync_rv_rst_n),
         // CORE interface
         .i_dma_en               (dma_en),
@@ -243,7 +249,7 @@ module core_top #(
 
     // IDS BUS
     sys_bus bus_0 (
-        .i_clk                  (i_clk), 
+        .i_clk                  (CLK), 
         .i_rst_n                (sync_bus_rst_n),
 
     // MASTERS
@@ -309,12 +315,21 @@ module core_top #(
         .i_dmem_dout            (dmem_rd_data),
 
     // PIM BUFFER SRAM
-        .o_buf_addr             (buf_addr),
-        .o_buf_write            (buf_write),
-        .o_buf_read             (buf_read),
-        .o_buf_size             (buf_size),
-        .o_buf_din              (buf_wr_data),
-        .i_buf_dout             (buf_rd_data),  
+        .o_buf_addr_0           (buf_addr_0),
+        .o_buf_write_0          (buf_write_0),
+        .o_buf_read_0			(buf_read_0),
+        .o_buf_size_0           (buf_size_0),
+        .o_buf_din_0            (buf_wr_data_0),
+        .i_buf_dout_0           (buf_rd_data_0),
+
+        .o_buf_addr_1           (buf_addr_1),
+        .o_buf_write_1          (buf_write_1),
+        .o_buf_read_1			(buf_read_1),
+        .o_buf_size_1           (buf_size_1),
+        .o_buf_din_1            (buf_wr_data_1),
+        .i_buf_dout_1           (buf_rd_data_1),
+
+
 
     // UART
         .o_uart_addr            (uart_addr),
@@ -335,7 +350,7 @@ module core_top #(
 
     // SPI SLAVE
     spi_slave_wrap spi_slave_0 (
-        .i_clk                  (i_clk),
+        .i_clk                  (CLK),
         .i_rst_n                (sync_spi_rst_n),
         // BUS I/F
         .o_req_spi              (req_spi),
@@ -347,16 +362,16 @@ module core_top #(
         .o_spi_read             (spi_read),
         .o_spi_write            (spi_write),
         // SPI I/F
-        .sclk                   (i_sclk),
-        .cs                     (i_cs),
-        .mosi                   (i_mosi),
-        .miso                   (o_miso)
+        .sclk                   (SCLK),
+        .cs                     (CS),
+        .mosi                   (MOSI),
+        .miso                   (MISO)
     );
 
     // IMEM
     sram_1024w_32b M0_0 (
-		.CLK 			(i_clk),
-		.CEN			(!{imem_read || imem_write}),
+		.CLK 			(CLK),
+		.CEN			(1'b0),
         .GWEN           (imem_read),
 		.WEN			(~({4{imem_write}} & imem_size)),
 		.A 				(imem_addr[11:2]),     // 10-bit address
@@ -369,8 +384,8 @@ module core_top #(
 
     // DMEM
     sram_1024w_32b M0_1 (
-		.CLK 			(i_clk),
-		.CEN			(!{dmem_read || dmem_write}),
+		.CLK 			(CLK),
+		.CEN			(1'b0),
         .GWEN           (dmem_read),
 		.WEN			(~({4{dmem_write}} & dmem_size)),
 		.A 				(dmem_addr[11:2]),
@@ -382,18 +397,48 @@ module core_top #(
 	);
 
     // weight and activation buffer
-    sram_8192w_32b M1_0 (
-		.CLK 			(i_clk),
-		.CEN			(!{buf_read || buf_write}),
-        .GWEN           (buf_read),
-		.WEN			(~({4{buf_write}} & buf_size)),
-		.A 				(buf_addr[14:2]),     // 10-bit address
-		.D 				(buf_wr_data),
+//    sram_8192w_32b M1_0 (
+//		.CLK 			(CLK),
+//		.CEN			(1'b0),
+//      .GWEN           (buf_read),
+//		.WEN			(~({4{buf_write}} & buf_size)),
+//		.A 				(buf_addr[14:2]),     // 10-bit address
+//		.D 				(buf_wr_data),
+//		.EMA			(3'b000),
+//		.RETN			(1'b1),
+//		// outputs
+//		.Q 				(buf_rd_data)
+//	);
+
+	// BUF_0
+	sram_4096w_32b M1_0 (
+		.CLK			(CLK),
+		.CEN			(1'b0),
+		.GWEN			(buf_read_0),
+		.WEN			(~({4{buf_write_0}} & buf_size_0)),
+		.A				(buf_addr_0[13:2]),
+		.D				(buf_wr_data_0),
+		.EMA			(3'b000),
+		.RETN			(1'b1),
+		// outputs	
+		.Q				(buf_rd_data_0)
+	);
+
+	// BUF_1
+	sram_4096w_32b M1_1 (
+		.CLK			(CLK),
+		.CEN			(1'b0),
+		.GWEN			(buf_read_1),
+		.WEN			(~({4{buf_write_1}} & buf_size_1)),
+		.A				(buf_addr_1[13:2]),
+		.D				(buf_wr_data_1),
 		.EMA			(3'b000),
 		.RETN			(1'b1),
 		// outputs
-		.Q 				(buf_rd_data)
+		.Q				(buf_rd_data_1)
 	);
+
+
 
     // on-chip uart
     uart_wrap #(
@@ -403,7 +448,7 @@ module core_top #(
         .UART_RECV              (32'h8000_0004),
         .UART_TRANS             (32'h8000_0008)
     ) on_chip_uart (
-        .i_clk                  (i_clk), 
+        .i_clk                  (CLK), 
         .i_rst_n                (sync_rv_rst_n), 
         .i_uart_addr            (uart_addr),
         .i_uart_write           (uart_write),
@@ -415,31 +460,30 @@ module core_top #(
         .o_serial_tx            (serial_tx)
     );
 
-    // PIM controller INPUT/OUTPUT
-    always_ff @(posedge i_clk or negedge sync_rv_rst_n) begin
-        if (sync_rv_rst_n == '0) begin
-            o_pim_addr <= '0;
-            o_pim_wr_data <= '0;
-        end else begin
-            o_pim_addr <= pim_addr;
-            o_pim_wr_data <= pim_wr_data;
-        end
-    end
-    assign pim_rd_data = i_pim_rd_data;
+	// PIM controller INPUT/OUTPUT
+	always_ff @(posedge CLK or negedge sync_rv_rst_n) begin
+		if (sync_rv_rst_n == '0) begin
+			PIMADDR <= '0;
+			PIMWD <= '0;
+		end else begin
+			PIMADDR <= pim_addr;
+			PIMWD <= pim_wr_data;
+		end
+	end
 
+    assign pim_rd_data = PIMRD;
 
-    // UART INPUT/OUTPUT
-    always_ff @(posedge i_clk or negedge sync_rv_rst_n) begin
-        if (sync_rv_rst_n == '0) begin
-            o_serial_tx <= '0;
-            serial_rx <= '0;
-        end else begin
-            o_serial_tx <= serial_tx;
-            serial_rx <= i_serial_rx;
-        end 
-    end
+	// UART INPUT/OUTPUT
+	always_ff @(posedge CLK or negedge sync_rv_rst_n) begin
+		if (sync_rv_rst_n == '0) begin
+			SERIALTX <= '0;
+			serial_rx <= '0;
+		end else begin
+			serial_rx <= SERIALRX;
+			SERIALTX <= serial_tx;
+		end
+	end
 
-    
+	
 
 endmodule
- 

@@ -81,7 +81,8 @@ async def core_bench(dut):
         dut.core_top_0.M0_0.mem[idx].value = 0
         dut.core_top_0.M0_1.mem[idx].value = 0
     for idx in range (0, 512):
-        dut.core_top_0.M1_0.mem[idx].value = random.randint(0, 2**512-1)
+        dut.core_top_0.M1_0.mem[idx].value = random.randint(0, 2**256-1)
+        dut.core_top_0.M1_1.mem[idx].value = random.randint(0, 2**256-1)
     await RisingEdge(dut.i_clk)
     await Timer(1, units="ns")
 

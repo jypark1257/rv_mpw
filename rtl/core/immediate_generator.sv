@@ -1,4 +1,4 @@
-`include "/home/pjy-wsl/idslab-cores/ids_mpw/rtl/headers/opcode.svh"
+`include "/home/pjy-wsl/rv_cores/rv_mpw/rtl/headers/opcode.svh"
 
 module immediate_generator (
     input           [6:0]   i_opcode,

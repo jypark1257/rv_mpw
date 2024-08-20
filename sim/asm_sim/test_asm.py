@@ -19,21 +19,21 @@ from cocotb.types import LogicArray
 @cocotb.test()
 async def rvtest_add(dut):
 
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
     for idx in range (0, 448):
         dut.M1_0.mem[idx].value = random.randint(0, 2**9)
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # program initialization
@@ -117,15 +117,15 @@ async def rvtest_add(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -135,21 +135,21 @@ async def rvtest_add(dut):
 async def rvtest_sub(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sub.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -231,15 +231,15 @@ async def rvtest_sub(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -249,21 +249,21 @@ async def rvtest_sub(dut):
 async def rvtest_xor(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/xor.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -345,15 +345,15 @@ async def rvtest_xor(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -361,21 +361,21 @@ async def rvtest_xor(dut):
 async def rvtest_or(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/or.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -457,15 +457,15 @@ async def rvtest_or(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -473,21 +473,21 @@ async def rvtest_or(dut):
 async def rvtest_and(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/and.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -569,15 +569,15 @@ async def rvtest_and(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -585,21 +585,21 @@ async def rvtest_and(dut):
 async def rvtest_sll(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sll.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -681,15 +681,15 @@ async def rvtest_sll(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -697,21 +697,21 @@ async def rvtest_sll(dut):
 async def rvtest_srl(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srl.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -793,15 +793,15 @@ async def rvtest_srl(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -809,21 +809,21 @@ async def rvtest_srl(dut):
 async def rvtest_slt(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slt.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -905,15 +905,15 @@ async def rvtest_slt(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -921,21 +921,21 @@ async def rvtest_slt(dut):
 async def rvtest_sltu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sltu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1017,15 +1017,15 @@ async def rvtest_sltu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1033,21 +1033,21 @@ async def rvtest_sltu(dut):
 async def rvtest_addi(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/addi.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1129,15 +1129,15 @@ async def rvtest_addi(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1145,21 +1145,21 @@ async def rvtest_addi(dut):
 async def rvtest_xori(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/xori.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1241,15 +1241,15 @@ async def rvtest_xori(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1257,21 +1257,21 @@ async def rvtest_xori(dut):
 async def rvtest_ori(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/ori.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1353,15 +1353,15 @@ async def rvtest_ori(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1369,21 +1369,21 @@ async def rvtest_ori(dut):
 async def rvtest_andi(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/andi.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1465,15 +1465,15 @@ async def rvtest_andi(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1481,21 +1481,21 @@ async def rvtest_andi(dut):
 async def rvtest_slli(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slli.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1577,15 +1577,15 @@ async def rvtest_slli(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1593,21 +1593,21 @@ async def rvtest_slli(dut):
 async def rvtest_srli(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srli.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1689,15 +1689,15 @@ async def rvtest_srli(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1705,21 +1705,21 @@ async def rvtest_srli(dut):
 async def rvtest_srai(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/srai.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1801,15 +1801,15 @@ async def rvtest_srai(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1817,21 +1817,21 @@ async def rvtest_srai(dut):
 async def rvtest_slti(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/slti.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -1913,15 +1913,15 @@ async def rvtest_slti(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -1929,21 +1929,21 @@ async def rvtest_slti(dut):
 async def rvtest_sltiu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sltiu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2025,15 +2025,15 @@ async def rvtest_sltiu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2041,21 +2041,21 @@ async def rvtest_sltiu(dut):
 async def rvtest_lb(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lb.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2137,15 +2137,15 @@ async def rvtest_lb(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2153,21 +2153,21 @@ async def rvtest_lb(dut):
 async def rvtest_lh(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lh.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2249,15 +2249,15 @@ async def rvtest_lh(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2265,21 +2265,21 @@ async def rvtest_lh(dut):
 async def rvtest_lw(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lw.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2361,15 +2361,15 @@ async def rvtest_lw(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2377,21 +2377,21 @@ async def rvtest_lw(dut):
 async def rvtest_lbu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lbu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2473,15 +2473,15 @@ async def rvtest_lbu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2489,21 +2489,21 @@ async def rvtest_lbu(dut):
 async def rvtest_lhu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lhu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2585,15 +2585,15 @@ async def rvtest_lhu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2601,21 +2601,21 @@ async def rvtest_lhu(dut):
 async def rvtest_sb(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sb.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2697,15 +2697,15 @@ async def rvtest_sb(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2713,21 +2713,21 @@ async def rvtest_sb(dut):
 async def rvtest_sh(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sh.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2809,15 +2809,15 @@ async def rvtest_sh(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2825,21 +2825,21 @@ async def rvtest_sh(dut):
 async def rvtest_sw(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/sw.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -2921,15 +2921,15 @@ async def rvtest_sw(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -2937,21 +2937,21 @@ async def rvtest_sw(dut):
 async def rvtest_beq(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/beq.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3033,15 +3033,15 @@ async def rvtest_beq(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3049,21 +3049,21 @@ async def rvtest_beq(dut):
 async def rvtest_bne(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bne.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3145,15 +3145,15 @@ async def rvtest_bne(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3161,21 +3161,21 @@ async def rvtest_bne(dut):
 async def rvtest_blt(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/blt.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3257,15 +3257,15 @@ async def rvtest_blt(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3273,21 +3273,21 @@ async def rvtest_blt(dut):
 async def rvtest_bge(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bge.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3369,15 +3369,15 @@ async def rvtest_bge(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3385,21 +3385,21 @@ async def rvtest_bge(dut):
 async def rvtest_bltu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bltu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3481,15 +3481,15 @@ async def rvtest_bltu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3497,21 +3497,21 @@ async def rvtest_bltu(dut):
 async def rvtest_bgeu(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/bgeu.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3593,15 +3593,15 @@ async def rvtest_bgeu(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3609,21 +3609,21 @@ async def rvtest_bgeu(dut):
 async def rvtest_jal(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/jal.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3705,15 +3705,15 @@ async def rvtest_jal(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3721,21 +3721,21 @@ async def rvtest_jal(dut):
 async def rvtest_jalr(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/jalr.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3817,15 +3817,15 @@ async def rvtest_jalr(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3833,21 +3833,21 @@ async def rvtest_jalr(dut):
 async def rvtest_lui(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/lui.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -3929,15 +3929,15 @@ async def rvtest_lui(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"
 
@@ -3945,21 +3945,21 @@ async def rvtest_lui(dut):
 async def rvtest_auipc(dut):
 
     
-    dut.i_rv_rst_n.value = 0
+    dut.RVRSTN.value = 0
     # memory initialization
     imem_path = "../../software/asm_tests/auipc.hex"
 
     # Create a 10ns period clock on port clk
-    clock = Clock(dut.i_clk, 10, units="ns")  
+    clock = Clock(dut.CLK, 10, units="ns")  
     # Start the clock. Start it low to avoid issues on the first RisingEdge
     cocotb.start_soon(clock.start(start_high=False))
 
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
     for idx in range (0, 256):
         dut.M0_0.mem[idx].value = 0
         dut.M0_1.mem[idx].value = 0
-    await RisingEdge(dut.i_clk)
+    await RisingEdge(dut.CLK)
     await Timer(1, units="ns")
 
     # dmem_path = "/home/pjy-wsl/rv32i/dmem.mem"
@@ -4041,14 +4041,14 @@ async def rvtest_auipc(dut):
                 ddata = ddata | (((inst_decimal & 0x40000000) >> 30) << (30*4  + mux_addr))
                 ddata = ddata | (((inst_decimal & 0x80000000) >> 31) << (31*4  + mux_addr))
                 dut.M0_1.mem[row_addr].value = ddata
-            await RisingEdge(dut.i_clk)
+            await RisingEdge(dut.CLK)
             idx = idx + 1
 
     await Timer(1, units="ns")
-    dut.i_rv_rst_n.value = 1
+    dut.RVRSTN.value = 1
 
     for _ in range(1000):
         
-        await RisingEdge(dut.i_clk)
+        await RisingEdge(dut.CLK)
 
     assert dut.core_0.core_ID.rf.rf_data[3].value == 0xffffffff, "RVTEST_FAIL"

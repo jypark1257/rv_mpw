@@ -28,7 +28,7 @@ module mpw_top (
     core_top #(
         .XLEN(32),
         .CPU_CLOCK_FREQ(250_000_000),
-        .RESET_PC(32'h4000_0000),
+        .RESET_PC(32'h1000_0000),
         .BAUD_RATE(115200)
     ) core_top_0 (
         .i_clk              (i_clk),
