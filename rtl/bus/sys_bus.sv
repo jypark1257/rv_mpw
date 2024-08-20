@@ -131,7 +131,7 @@ module sys_bus (
         .o_gnt_dma  (o_gnt_dma)
     );
 
-    assign gnt_imem = !(o_gnt_spi && (i_spi_addr[31:12] == 20'h40000));
+    assign gnt_imem = !(o_gnt_spi && (i_spi_addr[31:12] == 20'h10000));
 
     assign o_imem_addr  = (gnt_imem) ? i_imem_addr : i_spi_addr;
     assign o_imem_read  = (gnt_imem) ? i_imem_read : i_spi_read;
